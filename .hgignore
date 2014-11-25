@@ -1,0 +1,7 @@
+syntax: glob
+ComposedSet.sln.ide/
+ComposedSet/bin/
+ComposedSet/obj/
+ComposedSet_CSharp/obj/
+ComposedSet_Test/ComposedSet_Test/bin/
+ComposedSet_Test/ComposedSet_Test/obj/
