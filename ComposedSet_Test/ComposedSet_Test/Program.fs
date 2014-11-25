@@ -4,7 +4,7 @@
 
 
 module TestCompsedSet =
-    
+        
     let testStringA = "A.B.C.D"
     let testStringB = "B/A.C/A.C.D"
     
@@ -34,3 +34,17 @@ module TestCompsedSet =
     printfn "  %s" (csharpB.Compose())
     printfn "  %s" (fsharpB.Compose)
 
+    let stopWatch = System.Diagnostics.Stopwatch()
+    let shakespeare = System.IO.File.ReadAllText("..\..\hack11a.txt")    
+    
+    stopWatch.Start()
+    let csharpShakespeare = ComposedSet.CSharp.ComposedSet<System.String, ComposedSet.CSharp.StringComposedSetDatabase>(shakespeare)
+    stopWatch.Stop()
+    printfn "C# Decomposing Shakespeare took : %fms" stopWatch.Elapsed.TotalMilliseconds
+    
+    stopWatch.Reset()
+
+    stopWatch.Start()
+    let fsharpShakespeare = ComposedSet.FSharp.ComposedSet<System.String, ComposedSet.FSharp.StringComposedSetDatabase>(shakespeare)
+    stopWatch.Stop()
+    printfn "F# Decomposing Shakespeare took : %fms" stopWatch.Elapsed.TotalMilliseconds
