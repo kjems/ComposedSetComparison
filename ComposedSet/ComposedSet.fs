@@ -1,35 +1,35 @@
 ﻿namespace ComposedSet.FSharp
 
 type IComposedSetDatabase<'T> =
-    abstract member Compose     : int array  -> 'T
+    abstract member Compose     : int array -> 'T
     abstract member Decompose   : 'T        -> int array
 
 [<AbstractClass>]
 type ComposedSetDatabase<'T when 'T : comparison>() as this =
-    let mutable partToIndex         : Map<'T, int>      = Map.empty
-    let mutable composedToIndicies  : Map<'T, int array> = Map.empty
-    member val parts                : 'T list           = [] with get,set
+    let partToIndex                   = new System.Collections.Generic.Dictionary<'T, int>()
+    let composedToIndicies            = new System.Collections.Generic.Dictionary<'T, int array>();
+    member val parts                  : 'T list               = [] with get,set
 
-    abstract member Compose         : int array  -> 'T
-    abstract member Split           : 'T        -> 'T array  
-
+    abstract member Compose           : int array -> 'T
+    abstract member Split             : 'T        -> 'T array  
+    
     member this.Decompose composed = 
-        let cachedIndicies = composedToIndicies |> Map.tryFind composed
-        match cachedIndicies with
-        | Some indicies -> indicies 
-        | None ->
+        let ok, cachedIndicies = composedToIndicies.TryGetValue composed
+        match ok with
+        | true -> cachedIndicies 
+        | false ->
             let indicies = [|
                 for part in this.Split composed do 
-                    let cachedIndex = partToIndex |> Map.tryFind part
-                    match cachedIndex with
-                    | Some index -> yield index
-                    | None -> 
+                    let ok, cachedIndex = partToIndex.TryGetValue part
+                    match ok with
+                    | true -> yield cachedIndex
+                    | false -> 
                         this.parts <- this.parts @ [part]
                         let newIndex = (this.parts |> List.length) - 1
                         yield newIndex
-                        partToIndex <- partToIndex.Add(part, newIndex)                    
+                        partToIndex.Add(part, newIndex)                    
             |]
-            composedToIndicies <- composedToIndicies.Add(composed, indicies)
+            composedToIndicies.Add(composed, indicies)
             indicies
 
     interface IComposedSetDatabase<'T> with
