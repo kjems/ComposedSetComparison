@@ -9,9 +9,10 @@ namespace ComposedSet.CSharp
     public class StringComposedSetDatabase : BaseComposedSetDatabase<string>
     {
         const string regexSplitter = @"(\.)|(\/)|(\@)|(_)|(\f)";
+        static Regex regex = new Regex(regexSplitter, RegexOptions.Compiled);
         public override string[] Split(string composed)
         {
-            return Regex.Split(composed, regexSplitter, RegexOptions.Compiled).Where(s => !string.IsNullOrEmpty(s)).ToArray();
+            return regex.Split(composed).Where(s => !string.IsNullOrEmpty(s)).ToArray();
         }
 
         public override string Compose(List<int> indices)
