@@ -8,7 +8,7 @@ type IComposedSetDatabase<'T> =
 type ComposedSetDatabase<'T when 'T : comparison>() as this =
     let partToIndex                   = new System.Collections.Generic.Dictionary<'T, int>()
     let composedToIndicies            = new System.Collections.Generic.Dictionary<'T, ResizeArray<int>>()
-    member val parts                  : 'T list               = [] with get,set
+    member val parts                  : ResizeArray<'T>               = new ResizeArray<'T>()
 
     abstract member Compose           : ResizeArray<int> -> 'T
     abstract member Split             : 'T               -> 'T array  
@@ -24,8 +24,8 @@ type ComposedSetDatabase<'T when 'T : comparison>() as this =
                 match ok with
                 | true -> indicies.Add cachedIndex
                 | false -> 
-                    this.parts <- this.parts @ [part]
-                    let newIndex = (this.parts |> List.length) - 1
+                    this.parts.Add part
+                    let newIndex = (this.parts |> Seq.length) - 1
                     indicies.Add newIndex
                     partToIndex.Add(part, newIndex)                    
             
