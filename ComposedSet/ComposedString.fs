@@ -8,7 +8,7 @@ type StringComposedSetDatabase() =
         do printfn "Creating StringComposedSetDatabase"
 
     override this.Compose indicies = 
-        indicies |> Array.map (fun i -> this.parts.[i]) |> String.concat ""
+        indicies |> Seq.map (fun i -> this.parts.[i]) |> String.concat ""
             
     override this.Split composed = 
          Regex.Split(composed, @"(\.)|(\/)|(\@)|(_)|(\f)", RegexOptions.Compiled) |> Array.filter (fun s -> not (System.String.IsNullOrEmpty s))
