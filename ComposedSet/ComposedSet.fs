@@ -8,7 +8,7 @@ type IComposedSetDatabase<'T> =
 type ComposedSetDatabase<'T when 'T : comparison>() as this =
     let partToIndex                   = new System.Collections.Generic.Dictionary<'T, int>()
     let composedToIndicies            = new System.Collections.Generic.Dictionary<'T, int array>();
-    member val parts                  : ResizeArray<'T>               = new ResizeArray<'T>()
+    member val parts                  : ResizeArray<'T> = new ResizeArray<'T>()
 
     abstract member Compose           : int array -> 'T
     abstract member Split             : 'T        -> 'T array  
@@ -38,7 +38,7 @@ type ComposedSetDatabase<'T when 'T : comparison>() as this =
             
 
 
-type ComposedSet<'T, 'TDB when 'TDB :> ComposedSetDatabase<'T> and 'T : comparison and 'TDB :(new : unit -> 'TDB)>(indicies : int array) as this =
+type ComposedSet<'T, 'TDB when 'TDB :> ComposedSetDatabase<'T> and 'T : comparison and 'TDB :(new : unit -> 'TDB)>(in_indicies : int array) =
 
     // Static
     static let database = new 'TDB()
@@ -49,7 +49,47 @@ type ComposedSet<'T, 'TDB when 'TDB :> ComposedSetDatabase<'T> and 'T : comparis
     new(composed : 'T)  = ComposedSet(database.Decompose(composed) : int array)
 
     // Instance
-    member x.indicies = this.indicies
-    member x.GetIndiciesAsString = "[" + (indicies |> Array.map (fun i -> i.ToString()) |> String.concat ", ") + "]"
-    member x.Compose = database.Compose(indicies)
+    member this.indicies : int array = in_indicies
+    member this.GetIndiciesAsString = "[" + (this.indicies |> Array.map (fun i -> i.ToString()) |> String.concat ", ") + "]"
+    member this.Compose = database.Compose(this.indicies)
+    override this.Equals other =
+        match other with
+        | :? ComposedSet<'T,'TDB> as other -> 
+            if (this.indicies.Length <> other.indicies.Length) then false 
+            else 
+                seq { for i in 0 .. this.indicies.Length - 1 do
+                        if this.indicies.[i] <> other.indicies.[i] then yield false }
+                |> Seq.forall id
+        | _ -> false
+
+    override this.GetHashCode() =
+        let mutable hash = 13
+        for i in 0..this.indicies.Length-1 do
+            hash <- (hash * 7) + this.indicies.[i]
+        hash
+
+    member this.EndsWith (other : ComposedSet<'T,'TDB>) =
+        let tlen = this.indicies.Length
+        let olen = other.indicies.Length
+        if (olen = 0 || olen > tlen) then false
+        else
+            seq { for i in 0 .. other.indicies.Length - 1 do
+                    if other.indicies.[olen - i - 1] <> this.indicies.[tlen - i - 1] then yield false }
+            |> Seq.forall id
+
+    member this.StartsWith (other : ComposedSet<'T,'TDB>) =
+        let tlen = this.indicies.Length
+        let olen = other.indicies.Length
+        if (olen = 0 || olen > tlen) then false
+        else
+            seq { for i in 0 .. other.indicies.Length - 1 do
+                    if other.indicies.[i] <> this.indicies.[i] then yield false }
+            |> Seq.forall id
+
+    member this.TrimEnd (other : ComposedSet<'T,'TDB>) =
+        if this.EndsWith other then
+            new ComposedSet<'T,'TDB>(Array.sub this.indicies 0 (this.indicies.Length - other.indicies.Length))
+        else
+            this
+
  

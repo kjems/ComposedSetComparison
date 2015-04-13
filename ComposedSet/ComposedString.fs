@@ -5,7 +5,6 @@ open System.Text.RegularExpressions
 
 type StringComposedSetDatabase() =
     inherit ComposedSetDatabase<string>()
-        do printfn "Creating StringComposedSetDatabase"
 
     override this.Compose indicies = 
         indicies |> Seq.map (fun i -> this.parts.[i]) |> String.concat ""

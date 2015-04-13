@@ -166,6 +166,7 @@ namespace ComposedSet.CSharp
             int length = indices.Count;
             int alength = a.indices.Count;
             if (alength > length) return false;
+            if (alength == 0) return false;
             for (int i = 0; i < alength; ++i)
             {
                 if (a.indices[i] != indices[i]) return false;
@@ -182,19 +183,5 @@ namespace ComposedSet.CSharp
             }
             return this;
         }
-        /*public List<int> FindAll(ComposedString<T> cset)
-        {
-            int startIndex = 0;
-            for (int i = 0, length = indices.Count; i < length; ++i)
-            {
-                for (int j = 0, flength = cset.indices.Count; j < flength; ++j)
-                {
-
-                }
-            }
-        }
-        public void Replace(ComposedString<T> from, ComposedString<T> to)
-        {
-        }*/
     }
 }
