@@ -4,110 +4,57 @@ module PerformanceTest =
     type CComposedSet = ComposedSet.CSharp.ComposedSet<System.String, ComposedSet.CSharp.StringComposedSetDatabase>
     type FComposedSet = ComposedSet.FSharp.ComposedSet<System.String, ComposedSet.FSharp.StringComposedSetDatabase>
 
-
     let testStringA  = "A.B.C.D"
-    let testStringA2 = "A.B.C.D"
     let testStringB  = "B/A.C/A.C.D"
     let testStringC  = "C.D"
 
-    let csharpA = CComposedSet(testStringA)
     let fsharpA = FComposedSet(testStringA)
-
-    let csharpA2 = CComposedSet(testStringA2)
-    let fsharpA2 = FComposedSet(testStringA2)
-
-    let csharpB = CComposedSet(testStringB)
+    let csharpA = CComposedSet(testStringA)
+    
     let fsharpB = FComposedSet(testStringB)
-
-    let csharpC = CComposedSet(testStringC)
+    let csharpB = CComposedSet(testStringB)
+    
     let fsharpC = FComposedSet(testStringC)
-        
+    let csharpC = CComposedSet(testStringC)
     
-    let iterations = 500000
+    let profile name iterations f =
+        let w = new System.Diagnostics.Stopwatch()
+        w.Start()
+        for i in 0..iterations do f()
+        w.Stop()
+        System.GC.Collect()
+        System.Threading.Thread.Sleep(100)
+        printfn "%s took %dms" name w.ElapsedMilliseconds
+
+    
+    let iterations = 1000000
+    printfn "\n--- StartsWith x%i F# vs C# ---" iterations
+    profile "F# Startswith" iterations (fun () -> (fsharpB.StartsWith(fsharpA)) |> ignore)
+    profile "C# Startswith" iterations (fun () -> (csharpB.StartsWith(csharpA)) |> ignore) 
+
     printfn "\n--- EndsWith x%i F# vs C# ---" iterations
-    let mutable res = false
+    profile "F# Endswith" iterations (fun () -> (fsharpB.EndsWith(fsharpA)) |> ignore )
+    profile "C# Endswith" iterations (fun () -> (csharpB.EndsWith(csharpA)) |> ignore )
     
-    // ENDWITH
-    let stopWatch = System.Diagnostics.Stopwatch()
-    stopWatch.Start()    
-    for i in 0..iterations do
-        res <- csharpB.EndsWith(csharpA)
-        res <- csharpA.EndsWith(csharpC)
-        res <- csharpA.EndsWith(csharpA2)
-
-    stopWatch.Stop()    
-    printfn "C# EndsWith took : %fms" stopWatch.Elapsed.TotalMilliseconds
-    stopWatch.Reset()
-    stopWatch.Start()
-
-    for i in 0..iterations do
-        res <- fsharpB.EndsWith(fsharpA)
-        res <- fsharpA.EndsWith(fsharpC)
-        res <- fsharpA.EndsWith(fsharpA2)
+    printfn "\n--- Equals x%i F# vs C# ---" iterations
+    profile "F# Equals" iterations (fun () -> (fsharpB.Equals(fsharpA)) |> ignore )
+    profile "C# Equals" iterations (fun () -> (fsharpB.Equals(fsharpA)) |> ignore )
     
-    stopWatch.Stop()
-
-    printfn "F# EndsWith took : %fms" stopWatch.Elapsed.TotalMilliseconds
-    stopWatch.Reset()
-
-    // EQUALS
-    stopWatch.Start()    
-    for i in 0..iterations do
-        res <- csharpB.Equals(csharpA)
-        res <- csharpA.Equals(csharpC)
-        res <- csharpA.Equals(csharpA2)
-
-    stopWatch.Stop()    
-    printfn "C# Equals   took : %fms" stopWatch.Elapsed.TotalMilliseconds
-    stopWatch.Reset()
-    stopWatch.Start()
-
-    for i in 0..iterations do
-        res <- fsharpB.Equals(fsharpA)
-        res <- fsharpA.Equals(fsharpC)
-        res <- fsharpA.Equals(fsharpA2)
-    
-    stopWatch.Stop()
-
-    printfn "F# Equals   took : %fms" stopWatch.Elapsed.TotalMilliseconds
-    stopWatch.Reset()
-
-    // COMPOSE / DECOMPOSE
-    printfn "\n--- Compose / Decompose F# vs C# ---"
+    printfn "\n--- First Decompose F# vs C# ---"
     let shakespeare = System.IO.File.ReadAllText("..\..\shakespeare.txt")    
-       
-    stopWatch.Reset()
-    stopWatch.Start()
-    let fsharpShakespeare = FComposedSet(shakespeare)
-    stopWatch.Stop()
-    printfn "1) F# Decomposing Shakespeare took : %fms" stopWatch.Elapsed.TotalMilliseconds
 
-    stopWatch.Reset()
-    stopWatch.Start()
-    let fsharpShakespeare2 = FComposedSet(shakespeare)
-    stopWatch.Stop()
-    printfn "2) F# Decomposing Shakespeare took : %fms" stopWatch.Elapsed.TotalMilliseconds
-
-    stopWatch.Reset()
-    stopWatch.Start()
-    let fsharpShakespeareComposed = fsharpShakespeare2.Compose
-    stopWatch.Stop()
-    printfn "3) F# Composing   Shakespeare took : %fms (%b)\n" stopWatch.Elapsed.TotalMilliseconds (shakespeare.CompareTo(fsharpShakespeareComposed) = 0)
-
-    stopWatch.Reset()
-    stopWatch.Start()
-    let csharpShakespeare = CComposedSet(shakespeare)
-    stopWatch.Stop()
-    printfn "1) C# Decomposing Shakespeare took : %fms" stopWatch.Elapsed.TotalMilliseconds
-
-    stopWatch.Reset()
-    stopWatch.Start()
-    let csharpShakespeare2 = CComposedSet(shakespeare)
-    stopWatch.Stop()
-    printfn "2) C# Decomposing Shakespeare took : %fms" stopWatch.Elapsed.TotalMilliseconds
-
-    stopWatch.Reset()
-    stopWatch.Start()
-    let csharpShakespeareComposed = csharpShakespeare2.Compose()
-    stopWatch.Stop()
-    printfn "3) C# Composing   Shakespeare took : %fms (%b)\n" stopWatch.Elapsed.TotalMilliseconds (shakespeare.CompareTo(csharpShakespeareComposed) = 0)
+    let mutable fsharpShakespeare = FComposedSet("")
+    let mutable csharpShakespeare = CComposedSet("")
+    profile "F# Decompose" 1 (fun () -> (fsharpShakespeare <- FComposedSet(shakespeare)))
+    profile "C# Decompose" 1 (fun () -> (csharpShakespeare <- CComposedSet(shakespeare)))
+    
+    printfn "\n--- Second Decompose F# vs C# ---"
+    profile "F# Decompose" 1 (fun () -> (fsharpShakespeare <- FComposedSet(shakespeare)))
+    profile "C# Decompose" 1 (fun () -> (csharpShakespeare <- CComposedSet(shakespeare)))
+    
+    printfn "\n--- Compose F# vs C# ---"
+    let mutable fshakespeare = ""
+    let mutable cshakespeare = ""
+    profile "F# Compose" 4 (fun () -> (fshakespeare <- fsharpShakespeare.Compose  ))
+    profile "C# Compose" 4 (fun () -> (cshakespeare <- csharpShakespeare.Compose()))
+    
