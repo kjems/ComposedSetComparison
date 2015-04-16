@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ComposedSet", "ComposedSet\ComposedSet.fsproj", "{8701552F-46AE-47A7-BEA0-1DB1CBF814D2}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ComposedSet_Test", "ComposedSet_Test\ComposedSet_Test\ComposedSet_Test.fsproj", "{CDB145A2-A208-49BD-8A8B-0DC97D2DD937}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComposedSet_CSharp", "ComposedSet_CSharp\ComposedSet_CSharp.csproj", "{F7E07CE6-FF9A-498C-9CB7-3ACFEC71D42E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8701552F-46AE-47A7-BEA0-1DB1CBF814D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8701552F-46AE-47A7-BEA0-1DB1CBF814D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8701552F-46AE-47A7-BEA0-1DB1CBF814D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8701552F-46AE-47A7-BEA0-1DB1CBF814D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDB145A2-A208-49BD-8A8B-0DC97D2DD937}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDB145A2-A208-49BD-8A8B-0DC97D2DD937}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDB145A2-A208-49BD-8A8B-0DC97D2DD937}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDB145A2-A208-49BD-8A8B-0DC97D2DD937}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7E07CE6-FF9A-498C-9CB7-3ACFEC71D42E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7E07CE6-FF9A-498C-9CB7-3ACFEC71D42E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7E07CE6-FF9A-498C-9CB7-3ACFEC71D42E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7E07CE6-FF9A-498C-9CB7-3ACFEC71D42E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
