@@ -22,6 +22,19 @@ module UnitTest =
         Assert.That(ab   .TrimEnd(empty) .Equals(ab),    Is.True)
         Assert.That(abcd .TrimEnd(ab)    .Equals(ab),    Is.False)
         Assert.That(abcd .TrimEnd(ab)    .Equals(cd),    Is.False)
+
+    [<Test>]
+    let TrimEndCS() =
+        let abcd  = CCSet("A.B.C.D")
+        let ab    = CCSet("A.B.")
+        let cd    = CCSet("C.D")
+        let empty = CCSet("")
+        Assert.That(abcd .TrimEnd(cd)    .Equals(ab),    Is.True)
+        Assert.That(ab   .TrimEnd(ab)    .Equals(empty), Is.True)
+        Assert.That(empty.TrimEnd(empty) .Equals(empty), Is.True)
+        Assert.That(ab   .TrimEnd(empty) .Equals(ab),    Is.True)
+        Assert.That(abcd .TrimEnd(ab)    .Equals(ab),    Is.False)
+        Assert.That(abcd .TrimEnd(ab)    .Equals(cd),    Is.False)
         
 
     [<Test>]
@@ -34,6 +47,21 @@ module UnitTest =
         let ab    = FCSet("A.B")
         let cd    = FCSet("C.D")
         let dot   = FCSet(".")
+        Assert.That(abcd.Equals(ab + dot + cd), Is.True)
+        Assert.That((ab + dot + cd).Equals(ab + dot + cd), Is.True)
+        Assert.That(abcd.Equals(a + dot + b + dot + c + dot + d), Is.True)
+        Assert.That(abcd.Equals(ab + dot + dot + cd), Is.False)
+        
+    [<Test>]
+    let OperatorAddCS() =
+        let abcd  = CCSet("A.B.C.D")
+        let a     = CCSet("A")
+        let b     = CCSet("B")
+        let c     = CCSet("C")
+        let d     = CCSet("D")
+        let ab    = CCSet("A.B")
+        let cd    = CCSet("C.D")
+        let dot   = CCSet(".")
         Assert.That(abcd.Equals(ab + dot + cd), Is.True)
         Assert.That((ab + dot + cd).Equals(ab + dot + cd), Is.True)
         Assert.That(abcd.Equals(a + dot + b + dot + c + dot + d), Is.True)
