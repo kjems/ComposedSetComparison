@@ -2,31 +2,31 @@
 
 module List =
     let startWith (xs: 't list) (ys: 't list) =
-        match (xs.Length, ys.Length) with
-            | (_,0) -> false
-            | (xl,yl) when xl < yl -> false
-            | (_,_) ->
-                let rec startWithRec (xs, ys) =
-                    match (xs, ys) with
-                    | ([],[]) -> true   // equals
-                    | (_ ,[]) -> true   // ends with
-                    | ([], _) -> false  // should not happen
-                    | (x::xs, y::ys) ->
+        match xs.Length, ys.Length with
+            | _,0 -> false
+            | xl,yl when xl < yl -> false
+            | _,_ ->
+                let rec startWithRec xs ys =
+                    match xs, ys with
+                    | [],[] -> true   // equals
+                    | _ ,[] -> true   // ends with
+                    | [], _ -> false  // should not happen
+                    | x::xs, y::ys ->
                         match x = y with
                             | false -> false
-                            | true  -> startWithRec (xs, ys)
-                startWithRec (xs, ys)
+                            | true  -> startWithRec xs ys
+                startWithRec xs ys
 
     let sub (xs: 't list) (startIndex: int) (count: int) =
         let rec sub xs c i acc = 
-            match (c,i) with
-            | (c,_) when c >= count      -> List.rev acc
-            | (_,i) when i <  startIndex -> sub xs c (i+1) acc
-            | (_,i) when i >= startIndex -> 
+            match c,i with
+            | c,_ when c >= count      -> List.rev acc
+            | _,i when i <  startIndex -> sub xs c (i+1) acc
+            | _,i when i >= startIndex -> 
                 match xs with
                 | []    -> List.rev acc
                 | x::xs -> sub xs (c+1) (i+1) (x::acc)
-            | (_,_) -> []  // should not happen
+            | _,_ -> []  // should not happen
         sub xs 0 0 []
 
 type Indicies = int list
@@ -82,21 +82,11 @@ type ComposedSet<'T, 'TDB when 'TDB :> ComposedSetDatabase<'T> and 'T : comparis
     member this.indicies : Indicies = in_indicies
     member this.GetIndiciesAsString = "[" + (this.indicies |> List.map (fun i -> i.ToString()) |> String.concat ", ") + "]"
     member this.Compose = database.Compose(this.indicies)
-    override this.Equals other =
+    override this.Equals other = // 457
         match other with
         | :? ComposedSet<'T,'TDB> as other -> 
             match this.indicies.Length = other.indicies.Length with
-            | true  ->
-                let rec equal (xs, ys) =
-                    match (xs, ys) with
-                    | ([],[]) -> true   // equals
-                    | (_ ,[]) -> false  // should not happen
-                    | ([], _) -> false  // should not happen
-                    | (x::xs, y::ys) ->
-                        match x = y with
-                            | false -> false
-                            | true  -> equal (xs, ys)
-                equal (this.indicies, other.indicies)
+            | true  -> List.forall2 (fun a b -> a = b) this.indicies other.indicies
             | false -> false // length is not equal    
         | _ -> false // type mis-match
 
