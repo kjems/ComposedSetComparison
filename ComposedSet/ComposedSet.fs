@@ -85,21 +85,33 @@ type ComposedSet<'T, 'TDB when 'TDB :> ComposedSetDatabase<'T> and 'T : comparis
     override this.Equals other =
         match other with
         | :? ComposedSet<'T,'TDB> as other -> 
-            if (this.indicies.Length <> other.indicies.Length) then false 
-            else 
-                seq { for i in 0 .. this.indicies.Length - 1 do
-                        if this.indicies.[i] <> other.indicies.[i] then yield false }
-                |> Seq.forall id
-        | _ -> false
+            match this.indicies.Length = other.indicies.Length with
+            | true  ->
+                let rec equal (xs, ys) =
+                    match (xs, ys) with
+                    | ([],[]) -> true   // equals
+                    | (_ ,[]) -> false  // should not happen
+                    | ([], _) -> false  // should not happen
+                    | (x::xs, y::ys) ->
+                        match x = y with
+                            | false -> false
+                            | true  -> equal (xs, ys)
+                equal (this.indicies, other.indicies)
+            | false -> false // length is not equal    
+        | _ -> false // type mis-match
 
     override this.GetHashCode() =
-        let mutable hash = 13
-        for i in 0..this.indicies.Length-1 do
-            hash <- (hash * 7) + this.indicies.[i]
-        hash
+        let rec calchash xs hash =
+            match xs with
+            | []    -> hash
+            | x::xs -> calchash xs (hash * 7 + x)
+        calchash this.indicies 13
 
     static member (+) (left : ComposedSet<'T, 'TDB>, right : ComposedSet<'T, 'TDB>) =
         new ComposedSet<'T, 'TDB>( List.append left.indicies right.indicies )
+
+    static member IsNullOrEmpty(cset : ComposedSet<'T,'TDB>) =
+        cset.indicies.Length = 0
 
     member this.EndsWith (other : ComposedSet<'T,'TDB>) =
         List.startWith (List.rev this.indicies) (List.rev other.indicies) 
@@ -108,7 +120,6 @@ type ComposedSet<'T, 'TDB when 'TDB :> ComposedSetDatabase<'T> and 'T : comparis
         List.startWith this.indicies other.indicies
 
     member this.TrimEnd (other : ComposedSet<'T,'TDB>) =
-        if this.EndsWith other then
-            new ComposedSet<'T,'TDB>(List.sub this.indicies 0 (this.indicies.Length - other.indicies.Length))
-        else
-            this
+        match this.EndsWith other with
+        | true  -> new ComposedSet<'T,'TDB>(List.sub this.indicies 0 (this.indicies.Length - other.indicies.Length))
+        | false -> this
