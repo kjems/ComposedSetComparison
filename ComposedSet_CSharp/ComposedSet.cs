@@ -60,27 +60,30 @@ namespace ComposedSet.CSharp
 
         // Instance
         protected readonly List<int> indices;
+        protected readonly int hashCode;
 
         // Constructors
         protected ComposedSet() { }
         protected ComposedSet(List<int> indices)
         {
             this.indices = indices;
+            hashCode = CalculateHashCode(indices);
         }
         public ComposedSet(ComposedSet<T, TDB> cset)
         {
             indices = new List<int>(cset.indices);
+            hashCode = CalculateHashCode(indices);
         }
         public ComposedSet(T composed)
         {
             indices = database.Decompose(composed);
+            hashCode = CalculateHashCode(indices);
         }
 
         public static implicit operator ComposedSet<T, TDB>(T composed)
         {
             return new ComposedSet<T, TDB>(composed);
         }
-
         public static ComposedSet<T, TDB> operator +(ComposedSet<T, TDB> a, ComposedSet<T, TDB> b)
         {
             return new ComposedSet<T, TDB>(a.indices.Concat(b.indices).ToList());
@@ -101,9 +104,14 @@ namespace ComposedSet.CSharp
         }
         public static bool IsNullOrEmpty(ComposedSet<T, TDB> cset)
         {
-            if (cset == null) return true;
-            if (cset.indices.Count == 0) return true;
-            return false;
+            return cset == null || cset.indices.Count == 0;
+        }
+        private static int CalculateHashCode(List<int> indices)
+        {
+            int hash = 13;
+            for (int i = 0, length = indices.Count; i < length; ++i)
+                hash = (hash * 7) + indices[i];
+            return hash;
         }
 
         public T Compose()
@@ -133,53 +141,48 @@ namespace ComposedSet.CSharp
             if (obj == null) return false;
             var other = obj as ComposedSet<T, TDB>;
             if ((object)other == null) return false;
+            if (other.hashCode != hashCode) return false;
             if (other.indices.Count != indices.Count) return false;
+            
             for (int i = 0, length = indices.Count; i < length; ++i)
-            {
                 if (other.indices[i] != indices[i]) return false;
-            }
+            
             return true;
         }
         public override int GetHashCode()
         {
-            int hash = 13;
-            for (int i = 0, length = indices.Count; i < length; ++i)
-            {
-                hash = (hash * 7) + indices[i];
-            }
-            return hash;
+            return hashCode;
         }
         public bool EndsWith(ComposedSet<T, TDB> a)
         {
             int length = indices.Count;
-            int alength = a.indices.Count;
+            var aindicies = a.indices;
+            int alength = aindicies.Count;
+
             if (alength > length) return false;
             if (alength == 0) return false;
-            for (int i = 0; i < alength; ++i)
-            {
-                if (a.indices[alength - i - 1] != indices[length - i - 1]) return false;
-            }
+            
+            for (int i = 1, count = alength + 1; i < count ; ++i)
+                if (aindicies[alength - i] != indices[length - i]) return false;
+            
             return true;
         }
         public bool StartsWith(ComposedSet<T, TDB> a)
         {
             int length = indices.Count;
             int alength = a.indices.Count;
+
             if (alength > length) return false;
             if (alength == 0) return false;
+            
             for (int i = 0; i < alength; ++i)
-            {
                 if (a.indices[i] != indices[i]) return false;
-            }
+
             return true;
         }
         public ComposedSet<T, TDB> TrimEnd(ComposedSet<T, TDB> cset)
         {
-            if (EndsWith(cset))
-            { 
-                return new ComposedSet<T, TDB>(indices.GetRange(0, indices.Count - cset.indices.Count));
-            }
-            return this;
+            return EndsWith(cset) ? new ComposedSet<T, TDB>(indices.GetRange(0, indices.Count - cset.indices.Count)) : this;
         }
     }
 }
