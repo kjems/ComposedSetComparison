@@ -1,5 +1,34 @@
 ﻿namespace ComposedSet.FSharp
 
+module List =
+    let startWith (xs: 't list) (ys: 't list) =
+        match (xs.Length, ys.Length) with
+            | (_,0) -> false
+            | (xl,yl) when xl < yl -> false
+            | (_,_) ->
+                let rec startWithRec (xs, ys) =
+                    match (xs, ys) with
+                    | ([],[]) -> true   // equals
+                    | (_ ,[]) -> true   // ends with
+                    | ([], _) -> false  // should not happen
+                    | (x::xs, y::ys) ->
+                        match x = y with
+                            | false -> false
+                            | true  -> startWithRec (xs, ys)
+                startWithRec (xs, ys)
+
+    let sub (xs: 't list) (startIndex: int) (count: int) =
+        let rec sub xs c i acc = 
+            match (c,i) with
+            | (c,_) when c >= count      -> List.rev acc
+            | (_,i) when i <  startIndex -> sub xs c (i+1) acc
+            | (_,i) when i >= startIndex -> 
+                match xs with
+                | []    -> List.rev acc
+                | x::xs -> sub xs (c+1) (i+1) (x::acc)
+            | (_,_) -> []  // should not happen
+        sub xs 0 0 []
+
 type Indicies = int list
 
 type IComposedSetDatabase<'T> =
@@ -41,34 +70,6 @@ type ComposedSetDatabase<'T when 'T : comparison>() as this =
 
 
 type ComposedSet<'T, 'TDB when 'TDB :> ComposedSetDatabase<'T> and 'T : comparison and 'TDB :(new : unit -> 'TDB)>(in_indicies : Indicies) =
-
-    let startWith (xs: 't list) (ys: 't list) =
-        match (xs.Length, ys.Length) with
-            | (_,0) -> false
-            | (xl,yl) when xl < yl -> false
-            | (_,_) ->
-                let rec startWithRec (xs, ys) =
-                    match (xs, ys) with
-                    | ([],[]) -> true   // equals
-                    | (_ ,[]) -> true   // ends with
-                    | ([], _) -> false  // never happens
-                    | (x::xs, y::ys) ->
-                        match x = y with
-                            | false -> false
-                            | true -> startWithRec (xs, ys)
-                startWithRec (xs, ys)
-
-    let subList (xs: 't list) (startIndex: int) (count: int) =
-        let rec sub xs c i acc = 
-            match (c,i) with
-            | (c,_) when c >= count         -> List.rev acc
-            | (_,i) when i <  startIndex    -> sub xs c (i+1) acc
-            | (_,i) when i >= startIndex    -> 
-                match xs with
-                | []    -> List.rev acc
-                | x::xs -> sub xs (c+1) (i+1) (x::acc)
-        sub xs 0 0 []
-
     // Static
     static let database = new 'TDB()
     static let empty    = new ComposedSet<'T, 'TDB>()
@@ -101,16 +102,13 @@ type ComposedSet<'T, 'TDB when 'TDB :> ComposedSetDatabase<'T> and 'T : comparis
         new ComposedSet<'T, 'TDB>( List.append left.indicies right.indicies )
 
     member this.EndsWith (other : ComposedSet<'T,'TDB>) =
-        startWith (List.rev this.indicies) (List.rev other.indicies) 
+        List.startWith (List.rev this.indicies) (List.rev other.indicies) 
 
     member this.StartsWith (other : ComposedSet<'T,'TDB>) =
-        startWith this.indicies other.indicies
+        List.startWith this.indicies other.indicies
 
     member this.TrimEnd (other : ComposedSet<'T,'TDB>) =
         if this.EndsWith other then
-            let subList2 lst startIndex count =
-                Array.sub (List.toArray lst) startIndex count |> List.ofArray
-
-            new ComposedSet<'T,'TDB>(subList2 this.indicies 0 (this.indicies.Length - other.indicies.Length))
+            new ComposedSet<'T,'TDB>(List.sub this.indicies 0 (this.indicies.Length - other.indicies.Length))
         else
             this
