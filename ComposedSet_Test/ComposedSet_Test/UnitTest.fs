@@ -1,14 +1,30 @@
 ﻿namespace ComposedSet.Test
 
-open System
-open System.Collections
 open NUnit.Framework
-open NUnit.Framework.Constraints
 
 module UnitTest =
 
     type CCSet = ComposedSet.CSharp.ComposedSet<System.String, ComposedSet.CSharp.StringComposedSetDatabase>
     type FCSet = ComposedSet.FSharp.ComposedSet<System.String, ComposedSet.FSharp.StringComposedSetDatabase>
+
+    [<Test>]
+    let GetHashCodeFS() =
+        let abcd  = FCSet("A.B.C.D")
+        Assert.That(FCSet("A.B.C.D").GetHashCode()  = FCSet("A.B.C.D")  .GetHashCode(), Is.True)
+        Assert.That(abcd            .GetHashCode()  = abcd              .GetHashCode(), Is.True)
+        Assert.That(FCSet("")       .GetHashCode()  = FCSet("")         .GetHashCode(), Is.True)
+        Assert.That(FCSet("A.B.C.D").GetHashCode()  = FCSet("A.B.C.E")  .GetHashCode(), Is.False)
+        Assert.That(FCSet(" ")      .GetHashCode()  = FCSet("")         .GetHashCode(), Is.False)
+
+    [<Test>]
+    let GetHashCodeCS() =
+        let abcd  = CCSet("A.B.C.D")
+        Assert.That(CCSet("A.B.C.D").GetHashCode()  = CCSet("A.B.C.D")  .GetHashCode(), Is.True)
+        Assert.That(abcd            .GetHashCode()  = abcd              .GetHashCode(), Is.True)
+        Assert.That(CCSet("")       .GetHashCode()  = CCSet("")         .GetHashCode(), Is.True)
+        Assert.That(CCSet("A.B.C.D").GetHashCode()  = CCSet("A.B.C.E")  .GetHashCode(), Is.False)
+        Assert.That(CCSet(" ")      .GetHashCode()  = CCSet("")         .GetHashCode(), Is.False)
+
 
     [<Test>]
     let TrimEndFS() =
@@ -111,11 +127,13 @@ module UnitTest =
     [<Test>]
     let EqualsFS() =
         Assert.That(FCSet("A.B.C.D" ).Equals(FCSet("A.B.C.D" )), Is.True)
+        Assert.That(FCSet("A.B.C.D" ) =     (FCSet("A.B.C.D" )), Is.True)
         Assert.That(FCSet(" ")       .Equals(FCSet(" ")),        Is.True)
         Assert.That(FCSet("" )       .Equals(FCSet("")),         Is.True)
         Assert.That(FCSet("A/B/C/D" ).Equals(FCSet("A.B.C.D" )), Is.False)
         Assert.That(FCSet("A.B.CD"  ).Equals(FCSet("A.B.C.D" )), Is.False)
         Assert.That(FCSet("A.B.C.C" ).Equals(FCSet("A.B.C.D" )), Is.False)
+        Assert.That(FCSet("A.B.C.C" ) =     (FCSet("A.B.C.D" )), Is.False)
         Assert.That(FCSet("A.B.C.D.").Equals(FCSet("A.B.C.D" )), Is.False)
         Assert.That(FCSet("0.B.C.D" ).Equals(FCSet("A.B.C.D" )), Is.False)
         Assert.That(FCSet("a.B.C.D" ).Equals(FCSet("A.B.C.D" )), Is.False)
@@ -127,11 +145,13 @@ module UnitTest =
     [<Test>]
     let EqualsCS() =
         Assert.That(CCSet("A.B.C.D" ).Equals(CCSet("A.B.C.D" )), Is.True)
+        Assert.That(CCSet("A.B.C.D" ) =     (CCSet("A.B.C.D" )), Is.True)
         Assert.That(CCSet(" ")       .Equals(CCSet(" ")),        Is.True)
         Assert.That(CCSet("" )       .Equals(CCSet("")),         Is.True)
         Assert.That(CCSet("A/B/C/D" ).Equals(CCSet("A.B.C.D" )), Is.False)
         Assert.That(CCSet("A.B.CD"  ).Equals(CCSet("A.B.C.D" )), Is.False)
         Assert.That(CCSet("A.B.C.C" ).Equals(CCSet("A.B.C.D" )), Is.False)
+        Assert.That(CCSet("A.B.C.C" ) =     (CCSet("A.B.C.D" )), Is.False)
         Assert.That(CCSet("A.B.C.D.").Equals(CCSet("A.B.C.D" )), Is.False)
         Assert.That(CCSet("0.B.C.D" ).Equals(CCSet("A.B.C.D" )), Is.False)
         Assert.That(CCSet("a.B.C.D" ).Equals(CCSet("A.B.C.D" )), Is.False)
