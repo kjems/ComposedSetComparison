@@ -38,7 +38,11 @@ module PerformanceTest =
     
     printfn "\n--- Equals x%i F# vs C# ---" iterations
     profile "F# Equals" iterations (fun () -> (fsharpB.Equals(fsharpA)) |> ignore )
-    profile "C# Equals" iterations (fun () -> (fsharpB.Equals(fsharpA)) |> ignore )
+    profile "C# Equals" iterations (fun () -> (csharpB.Equals(csharpA)) |> ignore )
+
+    printfn "\n--- TrimEnd x%i F# vs C# ---" iterations
+    profile "F# TrimEnd" iterations (fun () -> (fsharpB.TrimEnd(fsharpC)) |> ignore )
+    profile "C# TrimEnd" iterations (fun () -> (csharpB.TrimEnd(csharpC)) |> ignore )
     
     printfn "\n--- First Decompose F# vs C# ---"
     let shakespeare = System.IO.File.ReadAllText("..\..\shakespeare.txt")    

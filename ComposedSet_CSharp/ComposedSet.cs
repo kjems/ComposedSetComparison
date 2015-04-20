@@ -176,10 +176,8 @@ namespace ComposedSet.CSharp
         public ComposedSet<T, TDB> TrimEnd(ComposedSet<T, TDB> cset)
         {
             if (EndsWith(cset))
-            {
-                var trimmed = new ComposedSet<T, TDB>(this);
-                trimmed.indices.RemoveRange(trimmed.indices.Count - cset.indices.Count, cset.indices.Count);
-                return trimmed;
+            { 
+                return new ComposedSet<T, TDB>(indices.GetRange(0, indices.Count - cset.indices.Count));
             }
             return this;
         }
