@@ -1,19 +1,13 @@
 ﻿namespace ComposedSet.FSharp
 
 module List =
-    let startWith (xs: 't list) (ys: 't list) =
-        let rec startWithRec xs ys =
-            match xs, ys with
-            | [],[] -> true   // equals
-            | _ ,[] -> true   // start with
-            | [], _ -> false  // longer so false
-            | x::xs, y::ys ->
-                match x = y with
-                    | false -> false
-                    | true  -> startWithRec xs ys
-        startWithRec xs ys                
+    let rec startsWith l1 l2 =
+      match l1, l2 with     
+      | [],[] | _, [] -> true
+      | x::xs, y::ys when x = y -> startsWith xs ys
+      | _ -> false   
 
-    let sub (xs: 't list) (startIndex: int) (count: int) =
+    let sub xs startIndex count =
         let rec sub xs c i acc = 
             match c,i with
             | c,_ when c >= count      -> List.rev acc
@@ -22,7 +16,7 @@ module List =
                 match xs with
                 | []    -> List.rev acc
                 | x::xs -> sub xs (c+1) (i+1) (x::acc)
-            | _,_ -> []  // should not happen
+            | _ -> []  // should not happen
         sub xs 0 0 []
 
 type Indicies = int list
@@ -100,10 +94,10 @@ type ComposedSet<'T, 'TDB when 'TDB :> ComposedSetDatabase<'T> and 'T : comparis
         cset.indicies.Length = 0
 
     member this.EndsWith (other : ComposedSet<'T,'TDB>) =
-        List.startWith (List.rev this.indicies) (List.rev other.indicies) 
+        List.startsWith (List.rev this.indicies) (List.rev other.indicies) 
 
     member this.StartsWith (other : ComposedSet<'T,'TDB>) =
-        List.startWith this.indicies other.indicies
+        List.startsWith this.indicies other.indicies
 
     member this.TrimEnd (other : ComposedSet<'T,'TDB>) =
         match this.EndsWith other with
