@@ -2,20 +2,16 @@
 
 module List =
     let startWith (xs: 't list) (ys: 't list) =
-        match xs.Length, ys.Length with
-            | _,0 -> false
-            | xl,yl when xl < yl -> false
-            | _,_ ->
-                let rec startWithRec xs ys =
-                    match xs, ys with
-                    | [],[] -> true   // equals
-                    | _ ,[] -> true   // ends with
-                    | [], _ -> false  // should not happen
-                    | x::xs, y::ys ->
-                        match x = y with
-                            | false -> false
-                            | true  -> startWithRec xs ys
-                startWithRec xs ys
+        let rec startWithRec xs ys =
+            match xs, ys with
+            | [],[] -> true   // equals
+            | _ ,[] -> true   // start with
+            | [], _ -> false  // longer so false
+            | x::xs, y::ys ->
+                match x = y with
+                    | false -> false
+                    | true  -> startWithRec xs ys
+        startWithRec xs ys                
 
     let sub (xs: 't list) (startIndex: int) (count: int) =
         let rec sub xs c i acc = 
