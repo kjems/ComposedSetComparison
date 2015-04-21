@@ -101,8 +101,7 @@ module UnitTest =
         Assert.That(FCSet("A.B.C.D")    .EndsWith(FCSet("C.D")),    Is.True)  
         Assert.That(FCSet(" ")          .EndsWith(FCSet("A.B.C.D")),Is.False)
         Assert.That(FCSet("")           .EndsWith(FCSet("A.B.C.D")),Is.False)
-        Assert.That(FCSet("")           .EndsWith(FCSet("")),       Is.False)
-
+        
 
     [<Test>]
     let EndsWithCS() =
@@ -121,8 +120,7 @@ module UnitTest =
         Assert.That(CCSet("A.B.C.D")    .EndsWith(CCSet("C.D")),    Is.True)  
         Assert.That(CCSet(" ")          .EndsWith(CCSet("A.B.C.D")),Is.False)
         Assert.That(CCSet("")           .EndsWith(CCSet("A.B.C.D")),Is.False)
-        Assert.That(CCSet("")           .EndsWith(CCSet("")),       Is.False)
-
+        
 
     [<Test>]
     let EqualsFS() =
