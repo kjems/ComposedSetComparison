@@ -67,7 +67,18 @@ module PerformanceTest =
     profile "C# Equals" iterations (fun () -> 
         csharpB.Equals(csharpA) |> ignore
         (csharpA = csharpA2)    |> ignore
-        fsharpA = fsharpE       |> ignore)
+        csharpA = csharpE       |> ignore)
+
+    printfn "\n--- Concat x%i F# vs C# ---" iterations
+    profile "F# Concat" iterations (fun () -> 
+        fsharpB + fsharpA   |> ignore
+        fsharpA + fsharpA2  |> ignore
+        fsharpA + fsharpE   |> ignore)
+
+    profile "C# Concat" iterations (fun () -> 
+        csharpB + csharpA   |> ignore
+        csharpA + csharpA2  |> ignore
+        csharpA + csharpE   |> ignore)
 
     printfn "\n--- TrimEnd x%i F# vs C# ---" iterations
     profile "F# TrimEnd" iterations (fun () -> (fsharpB.TrimEnd(fsharpC)) |> ignore )
@@ -90,4 +101,5 @@ module PerformanceTest =
     let mutable cshakespeare = ""
     profile "F# Compose" 4 (fun () -> (fshakespeare <- fsharpShakespeare.Compose  ))
     profile "C# Compose" 4 (fun () -> (cshakespeare <- csharpShakespeare.Compose()))
+    
     
