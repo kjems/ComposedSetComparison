@@ -5,7 +5,7 @@ module List =
       match l1, l2 with     
       | [],[] | _, [] -> true
       | x::xs, y::ys when x = y -> startsWith xs ys
-      | _ -> false   
+      | _ -> false
 
     let sub xs startIndex count =
         let rec sub xs c i acc = 
@@ -58,11 +58,19 @@ type ComposedSetDatabase<'T when 'T : comparison>() as this =
         member x.Decompose composed = this.Decompose composed
             
 
-
 type ComposedSet<'T, 'TDB when 'TDB :> ComposedSetDatabase<'T> and 'T : comparison and 'TDB :(new : unit -> 'TDB)>(in_indicies : Indicies) =
     // Static
     static let database = new 'TDB()
     static let empty    = new ComposedSet<'T, 'TDB>()
+    
+    let calchash indices =
+        let rec calchashrec xs hash =
+            match xs with
+            | []    -> hash
+            | x::xs -> calchashrec xs (hash * 7 + x)
+        calchashrec indices 13
+    
+    let hash = calchash in_indicies
      
     // Constructors
     new()               = ComposedSet([] : Indicies)
@@ -70,25 +78,21 @@ type ComposedSet<'T, 'TDB when 'TDB :> ComposedSetDatabase<'T> and 'T : comparis
 
     // Instance
     member this.indicies : Indicies = in_indicies
+    
     member this.GetIndiciesAsString = "[" + (this.indicies |> List.map (fun i -> i.ToString()) |> String.concat ", ") + "]"
     member this.Compose = database.Compose(this.indicies)
     override this.Equals other = // 457
         match other with
         | :? ComposedSet<'T,'TDB> as other -> 
-            match this.indicies.Length = other.indicies.Length with
+            match this.GetHashCode() = other.GetHashCode() with
             | true  -> List.forall2 (fun a b -> a = b) this.indicies other.indicies
-            | false -> false // length is not equal    
+            | false -> false
         | _ -> false // type mis-match
 
-    override this.GetHashCode() =
-        let rec calchash xs hash =
-            match xs with
-            | []    -> hash
-            | x::xs -> calchash xs (hash * 7 + x)
-        calchash this.indicies 13
+    override this.GetHashCode() = hash
 
     static member (+) (left : ComposedSet<'T, 'TDB>, right : ComposedSet<'T, 'TDB>) =
-        new ComposedSet<'T, 'TDB>( List.append left.indicies right.indicies )
+        new ComposedSet<'T, 'TDB>( left.indicies @ right.indicies )
 
     static member IsNullOrEmpty(cset : ComposedSet<'T,'TDB>) =
         cset.indicies.Length = 0
