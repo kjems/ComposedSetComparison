@@ -22,7 +22,7 @@ namespace ComposedSet.CSharp
             List<int> indices;
             lock (constructorLockToken)
             {
-                if (!composedToIndicies.TryGetValue(composed, out indices))
+                if (!composedToIndices.TryGetValue(composed, out indices))
                 {
                     indices = new List<int>();
                     foreach (var part in Split(composed))
@@ -40,7 +40,7 @@ namespace ComposedSet.CSharp
                             partToIndex.Add(part, newIndex);
                         }
                     }
-                    composedToIndicies.Add(composed, indices);
+                    composedToIndices.Add(composed, indices);
                 }
             }
             return indices;
@@ -49,7 +49,7 @@ namespace ComposedSet.CSharp
         private readonly object constructorLockToken = new object();
         private readonly List<T> parts = new List<T>();
         private readonly Dictionary<T, int> partToIndex = new Dictionary<T, int>();
-        private readonly Dictionary<T, List<int>> composedToIndicies = new Dictionary<T, List<int>>();
+        private readonly Dictionary<T, List<int>> composedToIndices = new Dictionary<T, List<int>>();
     }
 
     public class ComposedSet<T, TDB> where TDB : IComposedSetDatabase<T>, new()
@@ -123,7 +123,7 @@ namespace ComposedSet.CSharp
         {
             return new List<int>(indices);
         }
-        public string GetIndiciesAsString()
+        public string GetIndicesAsString()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("[");
@@ -156,14 +156,14 @@ namespace ComposedSet.CSharp
         public bool EndsWith(ComposedSet<T, TDB> a)
         {
             int length = indices.Count;
-            var aindicies = a.indices;
-            int alength = aindicies.Count;
+            var aindices = a.indices;
+            int alength = aindices.Count;
 
             if (alength > length) return false;
             if (alength == 0) return false;
             
             for (int i = 1, count = alength + 1; i < count ; ++i)
-                if (aindicies[alength - i] != indices[length - i]) return false;
+                if (aindices[alength - i] != indices[length - i]) return false;
             
             return true;
         }

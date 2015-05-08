@@ -5,7 +5,7 @@ open NUnit.Framework
 module UnitTest =
 
     type CCSet = ComposedSet.CSharp.ComposedSet<System.String, ComposedSet.CSharp.StringComposedSetDatabase>
-    type FCSet = ComposedSet.FSharp.ComposedSet<System.String, ComposedSet.FSharp.StringComposedSetDatabase>
+    type FCSet = ComposedSet.FSharp.ComposedSetOO.ComposedSet<System.String, ComposedSet.FSharp.ComposedSetOO.StringComposedSetDatabase>
 
     [<Test>]
     let GetHashCodeFS() =

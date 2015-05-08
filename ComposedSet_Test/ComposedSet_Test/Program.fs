@@ -2,7 +2,7 @@
 
 module PerformanceTest =
     type CComposedSet = ComposedSet.CSharp.ComposedSet<System.String, ComposedSet.CSharp.StringComposedSetDatabase>
-    type FComposedSet = ComposedSet.FSharp.ComposedSet<System.String, ComposedSet.FSharp.StringComposedSetDatabase>
+    type FComposedSet = ComposedSet.FSharp.ComposedSetOO.ComposedSet<System.String, ComposedSet.FSharp.ComposedSetOO.StringComposedSetDatabase>
 
     let testStringA  = "A.B.C.D"
     let testStringA2 = "A.B.C.D"
@@ -101,5 +101,12 @@ module PerformanceTest =
     let mutable cshakespeare = ""
     profile "F# Compose" 4 (fun () -> (fshakespeare <- fsharpShakespeare.Compose  ))
     profile "C# Compose" 4 (fun () -> (cshakespeare <- csharpShakespeare.Compose()))
+
+    //printfn "%s" fsharpShakespeare.GetParts
+
+    printfn "F# Decompose => Compose Equal original: %b" (fsharpShakespeare.Compose.Equals(shakespeare))
+    printfn "C# Decompose => Compose Equal original: %b" (csharpShakespeare.Compose().Equals(shakespeare))
+
+    
     
     

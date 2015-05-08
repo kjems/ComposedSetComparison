@@ -5,10 +5,9 @@ using System.Text.RegularExpressions;
 
 namespace ComposedSet.CSharp
 {
-    using ComposedString = ComposedSet<string, StringComposedSetDatabase>;
     public class StringComposedSetDatabase : BaseComposedSetDatabase<string>
     {
-        const string regexSplitter = @"(\.)|(\/)|(\@)|(_)|(\f)";
+        const string regexSplitter = @"("")|(\])|(\[)|(\t)|(:)|(')|(;)|(-)|(\?)|(!)|(\r)|(\n)|(,)|(\ )|(\.)|(\/)|(\@)|(_)|(\f)";
         static Regex regex = new Regex(regexSplitter, RegexOptions.Compiled);
         public override string[] Split(string composed)
         {
