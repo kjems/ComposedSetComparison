@@ -29,9 +29,9 @@ module ComposedSetOO =
                         | true -> yield cachedIndex
                         | false -> 
                             this.parts.Add part
-                            let newIndex = (this.parts |> Seq.length) - 1
-                            yield newIndex
-                            partToIndex.Add(part, newIndex)                    
+                            let newIndex = (this.parts |> Seq.length) - 1                                                        
+                            partToIndex.Add(part, newIndex)
+                            yield newIndex                            
                 ]
                 composedToIndices.Add(composed, indices)
                 indices
