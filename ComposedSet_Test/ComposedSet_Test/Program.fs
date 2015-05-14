@@ -1,8 +1,14 @@
 ﻿namespace ComposedSet.Test
 
 module PerformanceTest =
-    type CComposedSet = ComposedSet.CSharp.ComposedSet<System.String, ComposedSet.CSharp.StringComposedSetDatabase>
-    type FComposedSet = ComposedSet.FSharp.ComposedSetOO.ComposedSet<System.String, ComposedSet.FSharp.ComposedSetOO.StringComposedSetDatabase>
+    type CComposedSet   = ComposedSet.CSharp.ComposedSet<System.String, ComposedSet.CSharp.StringComposedSetDatabase>
+    type FComposedSetOO = ComposedSet.FSharp.ComposedSetOO.ComposedSet<System.String, ComposedSet.FSharp.ComposedSetOO.StringComposedSetDatabase>
+    open ComposedSet.FSharpIdomatic.ComposedSetDatabaseOfStrings
+    open ComposedSet.FSharpIdomatic.ComposedSet
+
+    //open ComposedSet.FSharpIdomatic.Test
+    //testit
+    //exit 0
 
     let testStringA  = "A.B.C.D"
     let testStringA2 = "A.B.C.D"
@@ -11,22 +17,25 @@ module PerformanceTest =
     let testStringD  = "A.B"
     let testStringE  = "A.B.C.D.E.F"
 
-    let fsharpA = FComposedSet(testStringA)
+    let fsharpA = FComposedSetOO(testStringA)
+    let ifsa    = decompose testStringA
     let csharpA = CComposedSet(testStringA)
 
-    let fsharpA2= FComposedSet(testStringA2)
+    let fsharpA2= FComposedSetOO(testStringA2)
     let csharpA2= CComposedSet(testStringA2)
     
-    let fsharpB = FComposedSet(testStringB)
+    let fsharpB = FComposedSetOO(testStringB)
+    let ifsb = decompose testStringB
     let csharpB = CComposedSet(testStringB)
     
-    let fsharpC = FComposedSet(testStringC)
+    let fsharpC = FComposedSetOO(testStringC)
     let csharpC = CComposedSet(testStringC)
 
-    let fsharpD = FComposedSet(testStringD)
+    let fsharpD = FComposedSetOO(testStringD)
+    let ifsd    = decompose testStringD
     let csharpD = CComposedSet(testStringD)
 
-    let fsharpE = FComposedSet(testStringE)
+    let fsharpE = FComposedSetOO(testStringE)
     let csharpE = CComposedSet(testStringE)
     
     let profile name iterations f =
@@ -44,6 +53,10 @@ module PerformanceTest =
     profile "F# Startswith" iterations (fun () -> 
             fsharpB.StartsWith(fsharpA) |> ignore  
             fsharpB.StartsWith(fsharpD) |> ignore)
+
+    profile "F# ido Startswith" iterations (fun () -> 
+            startswith ifsb ifsa  |> ignore  
+            startswith ifsb ifsd  |> ignore)
 
     profile "C# Startswith" iterations (fun () -> 
         csharpB.StartsWith(csharpA) |> ignore
@@ -87,13 +100,13 @@ module PerformanceTest =
     printfn "\n--- First Decompose F# vs C# ---"
     let shakespeare = System.IO.File.ReadAllText("..\..\shakespeare.txt")    
 
-    let mutable fsharpShakespeare = FComposedSet("")
+    let mutable fsharpShakespeare = FComposedSetOO("")
     let mutable csharpShakespeare = CComposedSet("")
-    profile "F# Decompose" 1 (fun () -> (fsharpShakespeare <- FComposedSet(shakespeare)))
+    profile "F# Decompose" 1 (fun () -> (fsharpShakespeare <- FComposedSetOO(shakespeare)))
     profile "C# Decompose" 1 (fun () -> (csharpShakespeare <- CComposedSet(shakespeare)))
     
     printfn "\n--- Second Decompose F# vs C# ---"
-    profile "F# Decompose" 1 (fun () -> (fsharpShakespeare <- FComposedSet(shakespeare)))
+    profile "F# Decompose" 1 (fun () -> (fsharpShakespeare <- FComposedSetOO(shakespeare)))
     profile "C# Decompose" 1 (fun () -> (csharpShakespeare <- CComposedSet(shakespeare)))
     
     printfn "\n--- Compose F# vs C# ---"
