@@ -39,13 +39,15 @@ module ComposedSetDatabase =
                 cs
         
 module ComposedSet =
-    let isempty cs       = List.isEmpty cs.indices
+    let isempty    cs    = List.isEmpty    cs.indices
+    let calchash   cs    = List.calchash   cs.indices    
     let startswith xs ys = List.startsWith xs.indices ys.indices
     let endswith   xs ys = List.endsWith   xs.indices ys.indices
-    let equals     xs ys = if xs.hash = ys.hash then List.forall2 (fun x y -> x = y) xs.indices ys.indices else false
+    let equals     xs ys = if xs.hash = ys.hash then List.forall2 (fun x y -> x = y) xs.indices ys.indices else false    
     let concat     xs ys = 
         let indices' = xs.indices @ ys.indices
         {indices = indices'; hash = List.calchash indices'}
+    let (++)             = concat
     let trimend    xs ys = 
         if endswith xs ys then 
             let indices' = List.sub xs.indices 0 (xs.indices.Length - ys.indices.Length) 
