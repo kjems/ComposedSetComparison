@@ -2,23 +2,28 @@
 open Common
 
 type Indices        = int list
-type Composed<'a>   = Indices * ResizeArray<'a>
-type Decomposer<'a> = ResizeArray<'a> -> 'a     -> Composed<'a>
-type Composer<'a>   = Composed<'a>              -> 'a
+type Decomposed<'a> = {indices : Indices; hash : int}
+type Decomposer<'a> = 'a             -> Decomposed<'a>
+type Composer<'a>   = Decomposed<'a> -> 'a
 
 module ComposedSetDatabase =     
     open System.Collections.Generic   
-    let decompose split : Decomposer<'a> =    
-        // Internal mutable cache        
-        let partToIndex         = Dictionary<'a, int>()    
-        let composedToIndices   = Dictionary<'a, Indices>()
 
-        fun parts composed ->
+    // Internal mutable cache
+    let partToIndex         = Dictionary<'a, int>()    
+    let composedToIndices   = Dictionary<'a, Decomposed<'a>>()
+    let parts               = ResizeArray<'a>()
+
+    let assembler = 
+        fun decomposed -> decomposed.indices |> Seq.map (fun i -> parts.[i]) 
+
+    let decompose split : Decomposer<'a> =    
+        fun composed ->
             let ok, cachedIndices = composedToIndices.TryGetValue composed
             match ok with
-            | true -> cachedIndices, parts
+            | true -> cachedIndices
             | false ->
-                let indices = [
+                let indices' = [
                     for part in split composed do 
                         let ok, cachedIndex = partToIndex.TryGetValue part
                         match ok with
@@ -29,33 +34,36 @@ module ComposedSetDatabase =
                             partToIndex.Add(part, newIndex)                    
                             yield newIndex
                 ]
-                composedToIndices.Add(composed, indices)
-                indices, parts
+                let cs = {indices = indices'; hash = List.calchash indices'}
+                composedToIndices.Add(composed, cs)
+                cs
         
 module ComposedSet =
-    let calchash      = List.fold (fun h x -> h * 7 + x) 13
-    let isempty       = List.isEmpty
-    let startswith    = List.startsWith
-    let endswith      = List.endsWith
-    let equals xs ys  = if calchash xs = calchash ys then List.forall2 (fun x y -> x = y) xs ys else false
-    let trimend xs ys = if endswith xs ys then List.sub xs 0 (xs.Length - ys.Length) else xs
+    let isempty cs       = List.isEmpty cs.indices
+    let startswith xs ys = List.startsWith xs.indices ys.indices
+    let endswith   xs ys = List.endsWith   xs.indices ys.indices
+    let equals     xs ys = if xs.hash = ys.hash then List.forall2 (fun x y -> x = y) xs.indices ys.indices else false
+    let trimend    xs ys = 
+        if endswith xs ys then 
+            let indices' = List.sub xs.indices 0 (xs.indices.Length - ys.indices.Length) 
+            {indices = indices'; hash = List.calchash indices'}
+        else xs
 
-module ComposedSetDatabaseOfStrings =    
+module ComposedSetOfStrings =    
     open System.Text.RegularExpressions
     let regex                    = @"("")|(\])|(\[)|(\t)|(:)|(')|(;)|(-)|(\?)|(!)|(\r)|(\n)|(,)|(\ )|(\.)|(\/)|(\@)|(_)|(\f)"
     let split composed           = Regex.Split(composed, regex, RegexOptions.Compiled) |> Array.filter (fun s -> not (System.String.IsNullOrEmpty s))
     let decompose                = ComposedSetDatabase.decompose split
-    let compose (indices, parts : ResizeArray<string>) = indices |> Seq.map (fun i -> parts.[i]) |> String.concat ""
+    let compose indices          = ComposedSetDatabase.assembler indices |> String.concat ""
 
 module Test =    
     let testit = 
-        let parts = ResizeArray<string>()
-        let dumpParts (composed : Composed<string>) = printfn "indices:[%s], parts:[%s] " (fst composed |> Seq.map (fun i -> i.ToString()) |> String.concat "|") (snd composed |> String.concat "|")
-        let s1 = "Hello World, this is fun stuff"
-        let s2 = "fun stuff with a World"
-        let cs1 = ComposedSetDatabaseOfStrings.decompose parts s1        
-        dumpParts cs1 |> ignore
-        let cs2 = ComposedSetDatabaseOfStrings.decompose parts s2
-        dumpParts cs2 |> ignore
-        printfn "%s" (ComposedSetDatabaseOfStrings.compose cs1)
-        printfn "%s" (ComposedSetDatabaseOfStrings.compose cs2)
+        let dumpIndices (composed : Decomposed<'a>) = printfn "indices:[%s]" (composed.indices |> Seq.map (fun i -> i.ToString()) |> String.concat "|")
+        let s1  = "some words are the same"
+        let s2  = "and some words are different"
+        let cs1 = ComposedSetOfStrings.decompose s1        
+        dumpIndices cs1 |> ignore
+        let cs2 = ComposedSetOfStrings.decompose s2
+        dumpIndices cs2 |> ignore
+        printfn "%s" (ComposedSetOfStrings.compose cs1)
+        printfn "%s" (ComposedSetOfStrings.compose cs2)

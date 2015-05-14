@@ -21,3 +21,5 @@ module List =
                 | x::xs -> sub xs (c+1) (i+1) (x::acc)
             | _ -> []  // should not happen
         sub xs 0 0 []
+
+    let calchash = List.fold (fun h x -> h * 7 + x) 13
