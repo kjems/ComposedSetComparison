@@ -1,4 +1,4 @@
-﻿namespace ComposedSet.FSharpIdomatic
+﻿namespace ComposedSet.FSharpIdiomatic
 open Common
 
 type Indices        = int list

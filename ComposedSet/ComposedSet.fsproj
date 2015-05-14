@@ -45,7 +45,7 @@
   <ItemGroup>
     <Compile Include="Common.fs" />
     <Compile Include="ComposedSetOO.fs" />
-    <Compile Include="ComposedSetIdomatic.fs" />
+    <Compile Include="ComposedSetIdiomatic.fs" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
