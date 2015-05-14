@@ -6,10 +6,6 @@ module PerformanceTest =
     open ComposedSet.FSharpIdiomatic.ComposedSetOfStrings
     open ComposedSet.FSharpIdiomatic.ComposedSet
 
-    //open ComposedSet.FSharpIdomatic.Test
-    //testit
-    //exit 0
-
     let str_a  = "A.B.C.D"
     let str_a2 = "A.B.C.D"
     let str_b  = "B/A.C/A.C.D"

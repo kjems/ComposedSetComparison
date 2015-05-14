@@ -58,15 +58,3 @@ module ComposedSetOfStrings =
     let split composed           = Regex.Split(composed, regex, RegexOptions.Compiled) |> Array.filter (fun s -> not (System.String.IsNullOrEmpty s))
     let decompose                = ComposedSetDatabase.decompose split
     let compose indices          = ComposedSetDatabase.assembler indices |> String.concat ""
-
-module Test =    
-    let testit = 
-        let dumpIndices (composed : Decomposed<'a>) = printfn "indices:[%s]" (composed.indices |> Seq.map (fun i -> i.ToString()) |> String.concat "|")
-        let s1  = "some words are the same"
-        let s2  = "and some words are different"
-        let cs1 = ComposedSetOfStrings.decompose s1        
-        dumpIndices cs1 |> ignore
-        let cs2 = ComposedSetOfStrings.decompose s2
-        dumpIndices cs2 |> ignore
-        printfn "%s" (ComposedSetOfStrings.compose cs1)
-        printfn "%s" (ComposedSetOfStrings.compose cs2)
