@@ -6,15 +6,27 @@ module UnitTest =
 
     type CCSet = ComposedSet.CSharp.ComposedSet<System.String, ComposedSet.CSharp.StringComposedSetDatabase>
     type FCSet = ComposedSet.FSharp.ComposedSetOO.ComposedSet<System.String, ComposedSet.FSharp.ComposedSetOO.StringComposedSetDatabase>
+    open ComposedSet.FSharpIdiomatic.ComposedSetOfStrings
+    open ComposedSet.FSharpIdiomatic.ComposedSet
 
     [<Test>]
-    let GetHashCodeFS() =
+    let GetHashCodeFSOO() =
         let abcd  = FCSet("A.B.C.D")
         Assert.That(FCSet("A.B.C.D").GetHashCode()  = FCSet("A.B.C.D")  .GetHashCode(), Is.True)
         Assert.That(abcd            .GetHashCode()  = abcd              .GetHashCode(), Is.True)
         Assert.That(FCSet("")       .GetHashCode()  = FCSet("")         .GetHashCode(), Is.True)
         Assert.That(FCSet("A.B.C.D").GetHashCode()  = FCSet("A.B.C.E")  .GetHashCode(), Is.False)
         Assert.That(FCSet(" ")      .GetHashCode()  = FCSet("")         .GetHashCode(), Is.False)
+
+    [<Test>]
+    let GetHashCodeFS() =
+        let abcd  = decompose "A.B.C.D"
+        let dcca  = calchash << decompose
+        Assert.That(dcca "A.B.C.D" = dcca "A.B.C.D" , Is.True)
+        Assert.That(calchash abcd  = calchash abcd  , Is.True)
+        Assert.That(dcca ""        = dcca ""        , Is.True)
+        Assert.That(dcca "A.B.C.D" = dcca "A.B.C.E" , Is.False)
+        Assert.That(dcca " "       = dcca ""        , Is.False)
 
     [<Test>]
     let GetHashCodeCS() =
@@ -27,7 +39,7 @@ module UnitTest =
 
 
     [<Test>]
-    let TrimEndFS() =
+    let TrimEndFSOO() =
         let abcd  = FCSet("A.B.C.D")
         let ab    = FCSet("A.B.")
         let cd    = FCSet("C.D")
@@ -38,6 +50,19 @@ module UnitTest =
         Assert.That(ab   .TrimEnd(empty) .Equals(ab),    Is.True)
         Assert.That(abcd .TrimEnd(ab)    .Equals(ab),    Is.False)
         Assert.That(abcd .TrimEnd(ab)    .Equals(cd),    Is.False)
+
+    [<Test>]
+    let TrimEndFS() =
+        let abcd  = decompose "A.B.C.D"
+        let ab    = decompose "A.B."
+        let cd    = decompose "C.D"
+        let empty = decompose ""
+        Assert.That(equals (trimend abcd cd) ab,         Is.True)
+        Assert.That(equals (trimend ab ab) empty,        Is.True)
+        Assert.That(equals (trimend empty empty) empty,  Is.True)
+        Assert.That(equals (trimend ab empty) ab,        Is.True)
+        Assert.That(equals (trimend abcd ab) ab,         Is.False)
+        Assert.That(equals (trimend abcd ab) cd,         Is.False)
 
     [<Test>]
     let TrimEndCS() =
@@ -54,7 +79,7 @@ module UnitTest =
         
 
     [<Test>]
-    let OperatorAddFS() =
+    let OperatorAddFSOO() =
         let abcd  = FCSet("A.B.C.D")
         let a     = FCSet("A")
         let b     = FCSet("B")
@@ -67,6 +92,21 @@ module UnitTest =
         Assert.That((ab + dot + cd).Equals(ab + dot + cd), Is.True)
         Assert.That(abcd.Equals(a + dot + b + dot + c + dot + d), Is.True)
         Assert.That(abcd.Equals(ab + dot + dot + cd), Is.False)
+
+    [<Test>]
+    let OperatorAddFS() =
+        let abcd  = decompose "A.B.C.D"
+        let a     = decompose "A"
+        let b     = decompose "B"
+        let c     = decompose "C"
+        let d     = decompose "D"
+        let ab    = decompose "A.B"
+        let cd    = decompose "C.D"
+        let dot   = decompose "."
+        Assert.That(equals abcd (ab ++ dot ++ cd), Is.True)
+        Assert.That(equals (ab ++ dot ++ cd) (ab ++ dot ++ cd), Is.True)
+        Assert.That(equals abcd (a ++ dot ++ b ++ dot ++ c ++ dot ++ d), Is.True)
+        Assert.That(equals abcd (ab ++ dot ++ dot ++ cd), Is.False)
         
     [<Test>]
     let OperatorAddCS() =
@@ -85,7 +125,7 @@ module UnitTest =
         
 
     [<Test>]
-    let EndsWithFS() =
+    let EndsWithFSOO() =
         Assert.That(FCSet("A.B.C.D")    .EndsWith(FCSet("A.B.C.D")),Is.True)
         Assert.That(FCSet("A.B.C.D")    .EndsWith(FCSet("A.B.C.D")),Is.True)
         Assert.That(FCSet("B/A.C/A.C.D").EndsWith(FCSet("C.D")),    Is.True) 
@@ -101,7 +141,25 @@ module UnitTest =
         Assert.That(FCSet("A.B.C.D")    .EndsWith(FCSet("C.D")),    Is.True)  
         Assert.That(FCSet(" ")          .EndsWith(FCSet("A.B.C.D")),Is.False)
         Assert.That(FCSet("")           .EndsWith(FCSet("A.B.C.D")),Is.False)
-        
+
+    [<Test>]
+    let EndsWithFS() =
+        let dcew a b = endswith (decompose a) (decompose b)
+        Assert.That(dcew "A.B.C.D"     "A.B.C.D",Is.True)
+        Assert.That(dcew "A.B.C.D"     "A.B.C.D",Is.True)
+        Assert.That(dcew "B/A.C/A.C.D" "C.D",    Is.True) 
+        Assert.That(dcew "0.B.C.D"     "C.D",    Is.True) 
+        Assert.That(dcew "a.B.C.D"     "C.D",    Is.True)
+        Assert.That(dcew "A/B/C/D"     "A.B.C.D",Is.False)
+        Assert.That(dcew "A.B.CD"      "A.B.C.D",Is.False)
+        Assert.That(dcew "A.B.C.C"     "A.B.C.D",Is.False)
+        Assert.That(dcew "A.B.C.D."    "A.B.C.D",Is.False)
+        Assert.That(dcew "0.B.C.D"     "A.B.C.D",Is.False)
+        Assert.That(dcew "a.B.C.D"     "A.B.C.D",Is.False)
+        Assert.That(dcew "B.B.C.D"     "A.B.C.D",Is.False) 
+        Assert.That(dcew "A.B.C.D"     "C.D",    Is.True)  
+        Assert.That(dcew " "           "A.B.C.D",Is.False)
+        Assert.That(dcew ""            "A.B.C.D",Is.False)        
 
     [<Test>]
     let EndsWithCS() =
@@ -123,7 +181,7 @@ module UnitTest =
         
 
     [<Test>]
-    let EqualsFS() =
+    let EqualsFSOO() =        
         Assert.That(FCSet("A.B.C.D" ).Equals(FCSet("A.B.C.D" )), Is.True)
         Assert.That(FCSet("A.B.C.D" ) =     (FCSet("A.B.C.D" )), Is.True)
         Assert.That(FCSet(" ")       .Equals(FCSet(" ")),        Is.True)
@@ -138,7 +196,24 @@ module UnitTest =
         Assert.That(FCSet("B.B.C.D" ).Equals(FCSet("A.B.C.D" )), Is.False)     
         Assert.That(FCSet(" ")       .Equals(FCSet("A.B.C.D" )), Is.False)
         Assert.That(FCSet("" )       .Equals(FCSet("A.B.C.D" )), Is.False)
-        
+
+    [<Test>]
+    let EqualsFS() =
+        let dceq a b = equals (decompose a) (decompose b)
+        Assert.That(dceq "A.B.C.D"  "A.B.C.D", Is.True)
+        Assert.That(dceq "A.B.C.D"  "A.B.C.D", Is.True)
+        Assert.That(dceq " "        " ",       Is.True)
+        Assert.That(dceq ""         "",        Is.True)
+        Assert.That(dceq "A/B/C/D"  "A.B.C.D", Is.False)
+        Assert.That(dceq "A.B.CD"   "A.B.C.D", Is.False)
+        Assert.That(dceq "A.B.C.C"  "A.B.C.D", Is.False)
+        Assert.That(dceq "A.B.C.C"  "A.B.C.D", Is.False)
+        Assert.That(dceq "A.B.C.D." "A.B.C.D", Is.False)
+        Assert.That(dceq "0.B.C.D"  "A.B.C.D", Is.False)
+        Assert.That(dceq "a.B.C.D"  "A.B.C.D", Is.False)
+        Assert.That(dceq "B.B.C.D"  "A.B.C.D", Is.False)     
+        Assert.That(dceq " "        "A.B.C.D", Is.False)
+        Assert.That(dceq ""         "A.B.C.D", Is.False)        
 
     [<Test>]
     let EqualsCS() =
@@ -159,7 +234,7 @@ module UnitTest =
         
 
     [<Test>]
-    let ComposeFS() =
+    let ComposeFSOO() =
         Assert.That(FCSet("A.B.C.D") .Compose, Is.EqualTo("A.B.C.D"))
         Assert.That(FCSet("A.B.C.D") .Compose, Is.Not.EqualTo("A/B/C/D"))
         Assert.That(FCSet("A/B/C/D") .Compose, Is.Not.EqualTo("A.B.C.D"))
@@ -169,6 +244,19 @@ module UnitTest =
         Assert.That(FCSet("0.B.C.D") .Compose, Is.Not.EqualTo("A.B.C.D"))
         Assert.That(FCSet("a.B.C.D") .Compose, Is.Not.EqualTo("A.B.C.D"))
         Assert.That(FCSet("B.B.C.D") .Compose, Is.Not.EqualTo("A.B.C.D"))
+
+    [<Test>]
+    let ComposeFS() =
+        let dcc = compose << decompose
+        Assert.That(dcc "A.B.C.D" , Is.EqualTo("A.B.C.D"))
+        Assert.That(dcc "A.B.C.D" , Is.Not.EqualTo("A/B/C/D"))
+        Assert.That(dcc "A/B/C/D" , Is.Not.EqualTo("A.B.C.D"))
+        Assert.That(dcc "A.B.CD"  , Is.Not.EqualTo("A.B.C.D"))
+        Assert.That(dcc "A.B.C.C" , Is.Not.EqualTo("A.B.C.D"))
+        Assert.That(dcc "A.B.C.D.", Is.Not.EqualTo("A.B.C.D"))
+        Assert.That(dcc "0.B.C.D" , Is.Not.EqualTo("A.B.C.D"))
+        Assert.That(dcc "a.B.C.D" , Is.Not.EqualTo("A.B.C.D"))
+        Assert.That(dcc "B.B.C.D" , Is.Not.EqualTo("A.B.C.D"))
         
 
     [<Test>]
