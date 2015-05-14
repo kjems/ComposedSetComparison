@@ -98,7 +98,7 @@ module PerformanceTest =
     profile "C# TrimEnd" iterations (fun () -> (csharpB.TrimEnd(csharpC)) |> ignore )
     
     printfn "\n--- First Decompose F# vs C# ---"
-    let shakespeare = System.IO.File.ReadAllText("..\..\shakespeare.txt")    
+    let shakespeare = System.IO.File.ReadAllText("..\..\..\..\data\shakespeare.txt")    
 
     let mutable fsharpShakespeare = FComposedSetOO("")
     let mutable csharpShakespeare = CComposedSet("")
