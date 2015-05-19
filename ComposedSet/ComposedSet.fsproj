@@ -43,9 +43,15 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\source\Common.fs" />
-    <Compile Include="..\source\ComposedSetOO.fs" />
-    <Compile Include="..\source\ComposedSetIdiomatic.fs" />
+    <Compile Include="..\source\Common.fs">
+      <Link>Common.fs</Link>
+    </Compile>
+    <Compile Include="..\source\ComposedSetOO.fs">
+      <Link>ComposedSetOO.fs</Link>
+    </Compile>
+    <Compile Include="..\source\ComposedSetIdiomatic.fs">
+      <Link>ComposedSetIdiomatic.fs</Link>
+    </Compile>
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
