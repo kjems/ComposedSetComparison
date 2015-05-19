@@ -51,12 +51,15 @@ module PerformanceTest =
     printfn "\n--- StartsWith x%i ---" iterations
     profile "C#    Startswith" iterations (fun () -> 
         cs_b.StartsWith(cs_a) |> ignore
+        cs_e.StartsWith(cs_a) |> ignore
         cs_b.StartsWith(cs_d) |> ignore)
     profile "F# OO Startswith" iterations (fun () -> 
         fsoo_b.StartsWith(fsoo_a) |> ignore  
+        fsoo_e.StartsWith(fsoo_a) |> ignore  
         fsoo_b.StartsWith(fsoo_d) |> ignore)
     profile "F#    Startswith" iterations (fun () -> 
         startswith fs_b fs_a  |> ignore  
+        startswith fs_e fs_a  |> ignore  
         startswith fs_b fs_d  |> ignore)
 
     printfn "\n--- EndsWith x%i ---" iterations
@@ -133,7 +136,14 @@ module PerformanceTest =
     printfn "C#    Decompose => Compose Equal original: %b" (cs_bigtext.Compose().Equals(str_bigtext))
     printfn "F# OO Decompose => Compose Equal original: %b" (fsoo_bigtext.Compose.Equals(str_bigtext))
     printfn "F#    Decompose => Compose Equal original: %b" ((compose fs_bigtext).Equals(str_bigtext))
+    
+    printfn "\n--- Decompose LineByLine ---"
+    let lines = System.IO.File.ReadAllLines "..\..\..\..\data\shakespeare.txt";
 
+    profile "C#    Decompose" 1 (fun () -> Array.map (CComposedSet : string -> CComposedSet) lines   |> ignore)
+    profile "F# OO Decompose" 1 (fun () -> Array.map (FComposedSetOO : string -> FComposedSetOO) lines |> ignore)
+    profile "F#    Decompose" 1 (fun () -> Array.map decompose lines |> ignore)
+    
     
     
     
