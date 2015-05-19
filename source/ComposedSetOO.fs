@@ -12,10 +12,10 @@ module ComposedSetOO =
     type ComposedSetDatabase<'T when 'T : comparison>() as this =
         let partToIndex                   = new System.Collections.Generic.Dictionary<'T, int>()
         let composedToIndices             = new System.Collections.Generic.Dictionary<'T, Indices>();
-        member val parts : ResizeArray<'T> = new ResizeArray<'T>()
+        member val parts : ResizeArray<'T>= new ResizeArray<'T>()
 
         abstract member Compose           : Indices  -> 'T
-        abstract member Split             : 'T        -> 'T array  
+        abstract member Split             : 'T       -> 'T array  
     
         member this.Decompose composed = 
             let ok, cachedIndices = composedToIndices.TryGetValue composed
@@ -26,10 +26,10 @@ module ComposedSetOO =
                     for part in this.Split composed do 
                         let ok, cachedIndex = partToIndex.TryGetValue part
                         match ok with
-                        | true -> yield cachedIndex
+                        | true  -> yield cachedIndex
                         | false -> 
                             this.parts.Add part
-                            let newIndex = (this.parts |> Seq.length) - 1                                                        
+                            let newIndex = this.parts.Count - 1                                                        
                             partToIndex.Add(part, newIndex)
                             yield newIndex                            
                 ]
@@ -59,7 +59,7 @@ module ComposedSetOO =
         member this.GetIndicesAsString = "[" + (this.indices |> List.map (fun i -> i.ToString()) |> String.concat ", ") + "]"
         member this.GetParts = (database.parts.ToArray() |> Array.map (fun s -> s.ToString()) |> String.concat "|") + "\n[Count:" + database.parts.Count.ToString() + "]"
         member this.Compose = database.Compose(this.indices)
-        override this.Equals other = // 457
+        override this.Equals other =
             match other with
             | :? ComposedSet<'T,'TDB> as other -> 
                 match this.GetHashCode() = other.GetHashCode() with
@@ -85,16 +85,13 @@ module ComposedSetOO =
             match this.EndsWith other with
             | true  -> new ComposedSet<'T,'TDB>(List.sub this.indices 0 (this.indices.Length - other.indices.Length))
             | false -> this
-
-
-
         
     open System.Text.RegularExpressions
     type StringComposedSetDatabase() =  
         inherit ComposedSetDatabase<string>()
 
         override this.Compose indices = 
-            indices |> Seq.map (fun i -> this.parts.[i]) |> String.concat ""
+            indices |> List.map (fun i -> this.parts.[i]) |> String.concat ""
             
         override this.Split composed = 
             let regex = @"("")|(\])|(\[)|(\t)|(:)|(')|(;)|(-)|(\?)|(!)|(\r)|(\n)|(,)|(\ )|(\.)|(\/)|(\@)|(_)|(\f)"
