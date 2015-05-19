@@ -9,19 +9,18 @@ type Composer<'a>   = Decomposed<'a> -> 'a
 module ComposedSetDatabase =     
     open System.Collections.Generic   
 
-    // Internal mutable cache
-    let partToIndex         = Dictionary<'a, int>()    
-    let composedToIndices   = Dictionary<'a, Decomposed<'a>>()
+    // Internal mutable state
+    let partToIndex         = Dictionary<'a, int>()        
     let parts               = ResizeArray<'a>()
+    // Internal mutable memoization
+    let composedToIndices   = Dictionary<'a, Indices>()
 
-    let assembler = 
-        fun decomposed -> decomposed.indices |> Seq.map (fun i -> parts.[i]) 
-
+    let assembler =  fun decomposed -> decomposed.indices |> List.map (fun i -> parts.[i]) 
     let decompose split : Decomposer<'a> =    
         fun composed ->
             let ok, cachedIndices = composedToIndices.TryGetValue composed
             match ok with
-            | true -> cachedIndices
+            | true -> {indices = cachedIndices; hash = List.calchash cachedIndices}
             | false ->
                 let indices' = [
                     for part in split composed do 
@@ -34,9 +33,9 @@ module ComposedSetDatabase =
                             partToIndex.Add(part, newIndex)                    
                             yield newIndex
                 ]
-                let cs = {indices = indices'; hash = List.calchash indices'}
-                composedToIndices.Add(composed, cs)
-                cs
+                let decomposed = {indices = indices'; hash = List.calchash indices'}
+                composedToIndices.Add(composed, indices')
+                decomposed
         
 module ComposedSet =
     let isempty    cs    = List.isEmpty    cs.indices
@@ -45,7 +44,7 @@ module ComposedSet =
     let endswith   xs ys = List.endsWith   xs.indices ys.indices
     let equals     xs ys = if xs.hash = ys.hash then List.forall2 (fun x y -> x = y) xs.indices ys.indices else false    
     let concat     xs ys = 
-        let indices' = xs.indices @ ys.indices
+        let indices' = List.append xs.indices ys.indices
         {indices = indices'; hash = List.calchash indices'}
     let (++)             = concat
     let trimend    xs ys = 
