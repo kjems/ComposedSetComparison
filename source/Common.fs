@@ -1,18 +1,21 @@
 ﻿namespace Common
+open FSharp.Core.Operators.NonStructuralComparison // requires F# 4.0
 
 module List =
     let calchash = List.fold (fun h x -> h * 7 + x) 13
     
-    let rec startsWith (l1 : int list) (l2 : int list) = 
-      match l1, l2 with     
-      | [],[] | _, [] -> true
-      | x::xs, y::ys when x = y -> startsWith xs ys
-      | _ -> false
+    let inline startsWith xs' ys' = 
+        let rec startsWith' xs ys =
+            match xs, ys with     
+            | [],[] | _, [] -> true
+            | x::xs, y::ys when x = y -> startsWith' xs ys
+            | _ -> false
+        startsWith' xs' ys'
 
-    let rec inline endsWith (l1 : int list) (l2 : int list) =
-        startsWith (List.rev l1) (List.rev l2)    
+    let rec inline endsWith xs ys =
+        startsWith (List.rev xs) (List.rev ys)    
 
-    let inline sub (xs : int list) startIndex count =
+    let inline sub xs startIndex count =
         let rec sub xs c i acc = 
             match c,i with
             | c,_ when c >= count      -> List.rev acc
@@ -29,7 +32,7 @@ module Array =
     let calchash = Array.fold (fun h x -> h * 7 + x) 13
 
     // Not very idiomatic, but fast
-    let startsWith (xs : int array) (ys : int array) = 
+    let inline startsWith xs ys = 
         let xs_length = Array.length xs
         let ys_length = Array.length ys        
         if ys_length > 0 && xs_length >= ys_length then
@@ -47,7 +50,7 @@ module Array =
             false
 
     // Not very idiomatic, but fast
-    let endsWith (xs : int array) (ys : int array) = 
+    let inline endsWith xs ys = 
         let xs_length = Array.length xs
         let ys_length = Array.length ys        
         if ys_length > 0 && xs_length >= ys_length then
