@@ -4,13 +4,13 @@ open FSharp.Core.Operators.NonStructuralComparison // requires F# 4.0
 module List =
     let calchash = List.fold (fun h x -> h * 7 + x) 13
     
-    let inline startsWith xs' ys' = 
+    let inline startsWith xs ys = 
         let rec startsWith' xs ys =
             match xs, ys with     
             | [],[] | _, [] -> true
             | x::xs, y::ys when x = y -> startsWith' xs ys
             | _ -> false
-        startsWith' xs' ys'
+        startsWith' xs ys
 
     let rec inline endsWith xs ys =
         startsWith (List.rev xs) (List.rev ys)    
@@ -27,7 +27,7 @@ module List =
             | _ -> []  // should not happen
         sub xs 0 0 []
 
-
+(*
 module Array =    
     let calchash = Array.fold (fun h x -> h * 7 + x) 13
 
@@ -66,5 +66,4 @@ module Array =
             equal
         else
             false
-
- 
+*)
