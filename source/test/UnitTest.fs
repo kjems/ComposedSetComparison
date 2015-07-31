@@ -91,6 +91,7 @@ module UnitTest =
         Assert.That(abcd.Equals(ab + dot + cd), Is.True)
         Assert.That((ab + dot + cd).Equals(ab + dot + cd), Is.True)
         Assert.That(abcd.Equals(a + dot + b + dot + c + dot + d), Is.True)
+        Assert.That(abcd.GetHashCode() = (a + dot + b + dot + c + dot + d).GetHashCode(), Is.True)
         Assert.That(abcd.Equals(ab + dot + dot + cd), Is.False)
 
     [<Test>]
@@ -106,6 +107,7 @@ module UnitTest =
         Assert.That(equals abcd (ab ++ dot ++ cd), Is.True)
         Assert.That(equals (ab ++ dot ++ cd) (ab ++ dot ++ cd), Is.True)
         Assert.That(equals abcd (a ++ dot ++ b ++ dot ++ c ++ dot ++ d), Is.True)
+        Assert.That(abcd.GetHashCode() = (a ++ dot ++ b ++ dot ++ c ++ dot ++ d).GetHashCode(), Is.True)
         Assert.That(equals abcd (ab ++ dot ++ dot ++ cd), Is.False)
         
     [<Test>]
@@ -121,6 +123,7 @@ module UnitTest =
         Assert.That(abcd.Equals(ab + dot + cd), Is.True)
         Assert.That((ab + dot + cd).Equals(ab + dot + cd), Is.True)
         Assert.That(abcd.Equals(a + dot + b + dot + c + dot + d), Is.True)
+        Assert.That(abcd.GetHashCode() = (a + dot + b + dot + c + dot + d).GetHashCode(), Is.True)
         Assert.That(abcd.Equals(ab + dot + dot + cd), Is.False)
         
 
