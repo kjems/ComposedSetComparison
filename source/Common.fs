@@ -1,5 +1,14 @@
-﻿namespace Common
-open FSharp.Core.Operators.NonStructuralComparison // requires F# 4.0
+﻿module Common
+open FSharp.Core.Operators.NonStructuralComparison
+
+module Perf =
+    let memoize f =
+        let cache = new System.Collections.Generic.Dictionary<_,_>(HashIdentity.Structural)
+        fun x -> match cache.TryGetValue(x) with
+                 | true, c -> c
+                 | _       -> let res = f x 
+                              cache.Add(x, res)
+                              res
 
 module List =
     let calchash = List.fold (fun h x -> h * 7 + x) 13
@@ -27,7 +36,7 @@ module List =
             | _ -> []  // should not happen
         sub xs 0 0 []
 
-(*
+
 module Array =    
     let calchash = Array.fold (fun h x -> h * 7 + x) 13
 
@@ -66,4 +75,4 @@ module Array =
             equal
         else
             false
-*)
+
