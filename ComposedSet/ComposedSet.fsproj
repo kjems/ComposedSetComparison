@@ -52,7 +52,9 @@
     <Compile Include="..\source\ComposedSetIdiomatic.fs">
       <Link>ComposedSetIdiomatic.fs</Link>
     </Compile>
-    <Compile Include="ComposedSetIdiomaticOfString.fs" />
+    <Compile Include="..\source\ComposedSetIdiomaticOfString.fs">
+      <Link>ComposedSetIdiomaticOfString.fs</Link>
+    </Compile>
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>

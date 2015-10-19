@@ -41,7 +41,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\source\ComposedSet.cs" />
-    <Compile Include="ComposedSetOfStrings.cs" />
+    <Compile Include="..\source\ComposedSetOfStrings.cs">
+      <Link>ComposedSetOfStrings.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
