@@ -141,7 +141,7 @@ module UnitTest =
         Assert.That(FCSet("0.B.C.D")    .EndsWith(FCSet("A.B.C.D")),Is.False)
         Assert.That(FCSet("a.B.C.D")    .EndsWith(FCSet("A.B.C.D")),Is.False)
         Assert.That(FCSet("B.B.C.D")    .EndsWith(FCSet("A.B.C.D")),Is.False) 
-        Assert.That(FCSet("A.B.C.D")    .EndsWith(FCSet("C.D")),    Is.True)  
+        Assert.That(FCSet("A.B.C.D")    .EndsWith(FCSet("C.D")),    Is.True)
         Assert.That(FCSet(" ")          .EndsWith(FCSet("A.B.C.D")),Is.False)
         Assert.That(FCSet("")           .EndsWith(FCSet("A.B.C.D")),Is.False)
 
@@ -160,9 +160,9 @@ module UnitTest =
         Assert.That(dcew "0.B.C.D"     "A.B.C.D",Is.False)
         Assert.That(dcew "a.B.C.D"     "A.B.C.D",Is.False)
         Assert.That(dcew "B.B.C.D"     "A.B.C.D",Is.False) 
-        Assert.That(dcew "A.B.C.D"     "C.D",    Is.True)  
+        Assert.That(dcew "A.B.C.D"     "C.D",    Is.True)
         Assert.That(dcew " "           "A.B.C.D",Is.False)
-        Assert.That(dcew ""            "A.B.C.D",Is.False)        
+        Assert.That(dcew ""            "A.B.C.D",Is.False)
 
     [<Test>]
     let EndsWithCS() =
@@ -178,13 +178,13 @@ module UnitTest =
         Assert.That(CCSet("0.B.C.D")    .EndsWith(CCSet("A.B.C.D")),Is.False)
         Assert.That(CCSet("a.B.C.D")    .EndsWith(CCSet("A.B.C.D")),Is.False)
         Assert.That(CCSet("B.B.C.D")    .EndsWith(CCSet("A.B.C.D")),Is.False) 
-        Assert.That(CCSet("A.B.C.D")    .EndsWith(CCSet("C.D")),    Is.True)  
+        Assert.That(CCSet("A.B.C.D")    .EndsWith(CCSet("C.D")),    Is.True)
         Assert.That(CCSet(" ")          .EndsWith(CCSet("A.B.C.D")),Is.False)
         Assert.That(CCSet("")           .EndsWith(CCSet("A.B.C.D")),Is.False)
         
 
     [<Test>]
-    let EqualsFSOO() =        
+    let EqualsFSOO() =
         Assert.That(FCSet("A.B.C.D" ).Equals(FCSet("A.B.C.D" )), Is.True)
         Assert.That(FCSet("A.B.C.D" ) =     (FCSet("A.B.C.D" )), Is.True)
         Assert.That(FCSet(" ")       .Equals(FCSet(" ")),        Is.True)
@@ -196,7 +196,7 @@ module UnitTest =
         Assert.That(FCSet("A.B.C.D.").Equals(FCSet("A.B.C.D" )), Is.False)
         Assert.That(FCSet("0.B.C.D" ).Equals(FCSet("A.B.C.D" )), Is.False)
         Assert.That(FCSet("a.B.C.D" ).Equals(FCSet("A.B.C.D" )), Is.False)
-        Assert.That(FCSet("B.B.C.D" ).Equals(FCSet("A.B.C.D" )), Is.False)     
+        Assert.That(FCSet("B.B.C.D" ).Equals(FCSet("A.B.C.D" )), Is.False)
         Assert.That(FCSet(" ")       .Equals(FCSet("A.B.C.D" )), Is.False)
         Assert.That(FCSet("" )       .Equals(FCSet("A.B.C.D" )), Is.False)
 
@@ -214,9 +214,9 @@ module UnitTest =
         Assert.That(dceq "A.B.C.D." "A.B.C.D", Is.False)
         Assert.That(dceq "0.B.C.D"  "A.B.C.D", Is.False)
         Assert.That(dceq "a.B.C.D"  "A.B.C.D", Is.False)
-        Assert.That(dceq "B.B.C.D"  "A.B.C.D", Is.False)     
+        Assert.That(dceq "B.B.C.D"  "A.B.C.D", Is.False)
         Assert.That(dceq " "        "A.B.C.D", Is.False)
-        Assert.That(dceq ""         "A.B.C.D", Is.False)        
+        Assert.That(dceq ""         "A.B.C.D", Is.False)
 
     [<Test>]
     let EqualsCS() =
@@ -231,7 +231,7 @@ module UnitTest =
         Assert.That(CCSet("A.B.C.D.").Equals(CCSet("A.B.C.D" )), Is.False)
         Assert.That(CCSet("0.B.C.D" ).Equals(CCSet("A.B.C.D" )), Is.False)
         Assert.That(CCSet("a.B.C.D" ).Equals(CCSet("A.B.C.D" )), Is.False)
-        Assert.That(CCSet("B.B.C.D" ).Equals(CCSet("A.B.C.D" )), Is.False)     
+        Assert.That(CCSet("B.B.C.D" ).Equals(CCSet("A.B.C.D" )), Is.False)
         Assert.That(CCSet(" ")       .Equals(CCSet("A.B.C.D" )), Is.False)
         Assert.That(CCSet("" )       .Equals(CCSet("A.B.C.D" )), Is.False)
         
@@ -264,12 +264,12 @@ module UnitTest =
 
     [<Test>]
     let ComposeCS() =
-        Assert.That(CCSet("A.B.C.D") .Compose, Is.EqualTo("A.B.C.D"))
-        Assert.That(CCSet("A.B.C.D") .Compose, Is.Not.EqualTo("A/B/C/D"))
-        Assert.That(CCSet("A/B/C/D") .Compose, Is.Not.EqualTo("A.B.C.D"))
-        Assert.That(CCSet("A.B.CD")  .Compose, Is.Not.EqualTo("A.B.C.D"))
-        Assert.That(CCSet("A.B.C.C") .Compose, Is.Not.EqualTo("A.B.C.D"))
-        Assert.That(CCSet("A.B.C.D.").Compose, Is.Not.EqualTo("A.B.C.D"))
-        Assert.That(CCSet("0.B.C.D") .Compose, Is.Not.EqualTo("A.B.C.D"))
-        Assert.That(CCSet("a.B.C.D") .Compose, Is.Not.EqualTo("A.B.C.D"))
-        Assert.That(CCSet("B.B.C.D") .Compose, Is.Not.EqualTo("A.B.C.D"))
+        Assert.That(CCSet("A.B.C.D") .Compose(), Is.EqualTo("A.B.C.D"))
+        Assert.That(CCSet("A.B.C.D") .Compose(), Is.Not.EqualTo("A/B/C/D"))
+        Assert.That(CCSet("A/B/C/D") .Compose(), Is.Not.EqualTo("A.B.C.D"))
+        Assert.That(CCSet("A.B.CD")  .Compose(), Is.Not.EqualTo("A.B.C.D"))
+        Assert.That(CCSet("A.B.C.C") .Compose(), Is.Not.EqualTo("A.B.C.D"))
+        Assert.That(CCSet("A.B.C.D.").Compose(), Is.Not.EqualTo("A.B.C.D"))
+        Assert.That(CCSet("0.B.C.D") .Compose(), Is.Not.EqualTo("A.B.C.D"))
+        Assert.That(CCSet("a.B.C.D") .Compose(), Is.Not.EqualTo("A.B.C.D"))
+        Assert.That(CCSet("B.B.C.D") .Compose(), Is.Not.EqualTo("A.B.C.D"))
