@@ -3,8 +3,8 @@
 module PerformanceTest =
     type CComposedSet   = ComposedSet.CSharp.ComposedSet<System.String, ComposedSet.CSharp.StringComposedSetDatabase>
     type FComposedSetOO = ComposedSet.FSharp.ComposedSetOO.ComposedSet<System.String, ComposedSet.FSharp.ComposedSetOO.StringComposedSetDatabase>
-    open ComposedSet.FSharpIdiomatic.ComposedSetIdiomaticOfString
-    open ComposedSet.FSharpIdiomatic.ComposedSetIdiomatic
+    open ComposedSet.FSharp.ComposedSetOfStrings
+    open ComposedSet.FSharp.ComposedSet
 
     let str_a  = "A.B.C.D"
     let str_a2 = "A.B.C.D"

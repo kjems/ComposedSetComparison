@@ -1,4 +1,4 @@
-﻿module ComposedSet.FSharpIdiomatic.ComposedSetIdiomatic
+﻿module ComposedSet.FSharp.ComposedSet
     open Common
     type Indices = int array
     type Decomposed<'T> = private {indices : Indices; hash : int}

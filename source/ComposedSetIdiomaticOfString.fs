@@ -1,6 +1,6 @@
-﻿module ComposedSet.FSharpIdiomatic.ComposedSetIdiomaticOfString
+﻿module ComposedSet.FSharp.ComposedSetOfStrings
     open System.Text.RegularExpressions
-    open ComposedSetIdiomatic
+    open ComposedSet
     open Common
     let parts          = ResizeArray<string>()
     let regex          = Regex(@"("")|(\])|(\[)|(\t)|(:)|(')|(;)|(-)|(\?)|(!)|(\r)|(\n)|(,)|(\ )|(\.)|(\/)|(\@)|(_)|(\f)", RegexOptions.Compiled)
