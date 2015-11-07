@@ -49,11 +49,11 @@
     <Compile Include="..\source\ComposedSetOO.fs">
       <Link>ComposedSetOO.fs</Link>
     </Compile>
-    <Compile Include="..\source\ComposedSetIdiomatic.fs">
-      <Link>ComposedSetIdiomatic.fs</Link>
+    <Compile Include="..\source\ComposedSet.fs">
+      <Link>ComposedSet.fs</Link>
     </Compile>
-    <Compile Include="..\source\ComposedSetIdiomaticOfString.fs">
-      <Link>ComposedSetIdiomaticOfString.fs</Link>
+    <Compile Include="..\source\ComposedSetOfString.fs">
+      <Link>ComposedSetOfString.fs</Link>
     </Compile>
   </ItemGroup>
   <PropertyGroup>
