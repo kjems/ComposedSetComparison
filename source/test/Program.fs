@@ -54,12 +54,12 @@ module PerformanceTest =
         cs_e.StartsWith(cs_a) |> ignore
         cs_b.StartsWith(cs_d) |> ignore)
     profile "F# OO Startswith" iterations (fun () -> 
-        fsoo_b.StartsWith(fsoo_a) |> ignore  
-        fsoo_e.StartsWith(fsoo_a) |> ignore  
+        fsoo_b.StartsWith(fsoo_a) |> ignore
+        fsoo_e.StartsWith(fsoo_a) |> ignore
         fsoo_b.StartsWith(fsoo_d) |> ignore)
     profile "F#    Startswith" iterations (fun () -> 
-        startswith fs_b fs_a  |> ignore  
-        startswith fs_e fs_a  |> ignore  
+        startswith fs_b fs_a  |> ignore
+        startswith fs_e fs_a  |> ignore
         startswith fs_b fs_d  |> ignore)
 
     printfn "\n--- EndsWith x%i ---" iterations
@@ -70,7 +70,7 @@ module PerformanceTest =
         fsoo_b.EndsWith(fsoo_a) |> ignore
         fsoo_b.EndsWith(fsoo_c) |> ignore)
     profile "F#    Endswith" iterations (fun () -> 
-        endswith fs_b fs_a  |> ignore  
+        endswith fs_b fs_a  |> ignore
         endswith fs_b fs_c  |> ignore)
     
     printfn "\n--- Equals x%i ---" iterations
@@ -83,9 +83,9 @@ module PerformanceTest =
         fsoo_a = fsoo_a2       |> ignore
         fsoo_a = fsoo_e        |> ignore)
     profile "F#    Equals" iterations (fun () -> 
-        equals fs_b fs_a  |> ignore  
+        equals fs_b fs_a  |> ignore
         equals fs_a fs_a2 |> ignore
-        equals fs_a fs_e  |> ignore)    
+        equals fs_a fs_e  |> ignore)
 
     printfn "\n--- Concat x%i ---" iterations
     profile "C#    Concat" iterations (fun () -> 
@@ -97,7 +97,7 @@ module PerformanceTest =
         fsoo_a + fsoo_a2  |> ignore
         fsoo_a + fsoo_e   |> ignore)
     profile "F#    Concat" iterations (fun () -> 
-        concat fs_b fs_a  |> ignore  
+        concat fs_b fs_a  |> ignore
         concat fs_a fs_a2 |> ignore
         concat fs_a fs_e  |> ignore)
 
@@ -107,10 +107,10 @@ module PerformanceTest =
     profile "F#    TrimEnd" iterations (fun () -> (trimend fs_b fs_c) |> ignore)
     
     printfn "\n--- First Decompose ---"
-    let str_bigtext = System.IO.File.ReadAllText("..\..\..\..\data\hack11a.txt")    
+    let str_bigtext = System.IO.File.ReadAllText("..\..\..\..\data\hack11a.txt")
 
     let mutable cs_bigtext   = CComposedSet("")
-    let mutable fsoo_bigtext = FComposedSetOO("")    
+    let mutable fsoo_bigtext = FComposedSetOO("")
     let mutable fs_bigtext   = decompose ""
     profile "C#    Decompose" 1 (fun () -> (cs_bigtext   <- CComposedSet(str_bigtext)))
     profile "F# OO Decompose" 1 (fun () -> (fsoo_bigtext <- FComposedSetOO(str_bigtext)))
@@ -128,10 +128,10 @@ module PerformanceTest =
     let mutable fsoo_composed_bigtext = ""
     let mutable fs_composed_bigtext   = ""
     profile "C#    Compose" 4 (fun () -> (cs_composed_bigtext   <- cs_bigtext.Compose()))
-    profile "F# OO Compose" 4 (fun () -> (fsoo_composed_bigtext <- fsoo_bigtext.Compose  ))    
+    profile "F# OO Compose" 4 (fun () -> (fsoo_composed_bigtext <- fsoo_bigtext.Compose))
     profile "F#    Compose" 4 (fun () -> (fs_composed_bigtext   <- compose fs_bigtext))
 
-    //printfn "%s" fsharpShakespeare.GetParts
+    //printfn "%s" (getParts())
 
     printfn "C#    Decompose => Compose Equal original: %b" (cs_bigtext.Compose().Equals(str_bigtext))
     printfn "F# OO Decompose => Compose Equal original: %b" (fsoo_bigtext.Compose.Equals(str_bigtext))

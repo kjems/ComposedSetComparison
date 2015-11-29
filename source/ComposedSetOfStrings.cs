@@ -7,7 +7,7 @@ namespace ComposedSet.CSharp
     using System.Text.RegularExpressions;
     public class StringComposedSetDatabase : BaseComposedSetDatabase<string>
     {
-        const string regexSplitter = @"("")|(\])|(\[)|(\t)|(:)|(')|(;)|(-)|(\?)|(!)|(\r)|(\n)|(,)|(\ )|(\.)|(\/)|(\@)|(_)|(\f)";
+        const string regexSplitter = @"("")|(\])|(\[)|(\()|(\))|(\t)|(:)|(')|(;)|(-)|(\?)|(!)|(\r)|(\n)|(,)|(\ )|(\.)|(\/)|(\@)|(_)|(\f)";
         static Regex regex = new Regex(regexSplitter, RegexOptions.Compiled);
         public override string[] Split(string composed)
         {

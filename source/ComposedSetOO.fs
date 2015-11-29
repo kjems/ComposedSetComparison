@@ -15,7 +15,7 @@ module ComposedSetOO =
         member val parts : ResizeArray<'T>= new ResizeArray<'T>()
 
         abstract member Compose           : Indices  -> 'T
-        abstract member Split             : 'T       -> 'T array  
+        abstract member Split             : 'T       -> 'T array
     
         member this.Decompose composed = 
             let ok, cachedIndices = composedToIndices.TryGetValue composed
@@ -29,9 +29,9 @@ module ComposedSetOO =
                         | true  -> yield cachedIndex
                         | false -> 
                             this.parts.Add part
-                            let newIndex = this.parts.Count - 1                                                        
+                            let newIndex = this.parts.Count - 1
                             partToIndex.Add(part, newIndex)
-                            yield newIndex                            
+                            yield newIndex
                 ]
                 composedToIndices.Add(composed, indices)
                 indices
@@ -46,7 +46,7 @@ module ComposedSetOO =
         static let database = new 'TDB()
         static let empty    = new ComposedSet<'T, 'TDB>()
     
-        let calchash indices = List.fold (fun h x -> h * 7 + x) 13 indices    
+        let calchash indices = List.fold (fun h x -> h * 7 + x) 13 indices
         let hash = calchash in_indices
      
         // Constructors
@@ -87,12 +87,12 @@ module ComposedSetOO =
             | false -> this
         
     open System.Text.RegularExpressions
-    type StringComposedSetDatabase() =  
+    type StringComposedSetDatabase() =
         inherit ComposedSetDatabase<string>()
 
         override this.Compose indices = 
             indices |> List.map (fun i -> this.parts.[i]) |> String.concat ""
             
         override this.Split composed = 
-            let regex = @"("")|(\])|(\[)|(\t)|(:)|(')|(;)|(-)|(\?)|(!)|(\r)|(\n)|(,)|(\ )|(\.)|(\/)|(\@)|(_)|(\f)"
+            let regex = @"("")|(\])|(\[)|(\()|(\))|(\t)|(:)|(')|(;)|(-)|(\?)|(!)|(\r)|(\n)|(,)|(\ )|(\.)|(\/)|(\@)|(_)|(\f)"
             Regex.Split(composed, regex, RegexOptions.Compiled) |> Array.filter (fun s -> not (System.String.IsNullOrEmpty s))
