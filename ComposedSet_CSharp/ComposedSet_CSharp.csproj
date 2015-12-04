@@ -40,8 +40,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\source\ComposedSet.cs" />
-    <Compile Include="..\source\ComposedSetOfStrings.cs">
+    <Compile Include="..\source\csharp\ComposedSet.cs">
+      <Link>ComposedSet.cs</Link>
+    </Compile>
+    <Compile Include="..\source\csharp\ComposedSetOfStrings.cs">
       <Link>ComposedSetOfStrings.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
