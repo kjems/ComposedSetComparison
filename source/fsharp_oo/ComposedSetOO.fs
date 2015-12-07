@@ -63,7 +63,7 @@ module ComposedSetOO =
             match other with
             | :? ComposedSet<'T,'TDB> as other -> 
                 match this.GetHashCode() = other.GetHashCode() with
-                | true  -> List.forall2 (fun a b -> a = b) this.indices other.indices
+                | true  -> List.forall2 (=) this.indices other.indices
                 | false -> false
             | _ -> false // type mis-match
 

@@ -113,36 +113,20 @@ namespace ComposedSet.CSharp
                 hash = (hash * 7) + indices[i];
             return hash;
         }
-
         public T Compose()
         {
             return database.Compose(indices);
         }
-
         public List<int> GetIndicesCopy()
         {
             return new List<int>(indices);
         }
-        public string GetIndicesAsString()
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("[");
-            for (int i = 0, length = indices.Count; i < length; ++i)
-            {
-                sb.Append(indices[i]);
-                if (i < length - 1) sb.Append(", ");
-            }
-            sb.Append("]");
-            return sb.ToString();
-        }
-
         public override bool Equals(object obj)
         {
             if (obj == null) return false;
             var other = obj as ComposedSet<T, TDB>;
             if ((object)other == null) return false;
             if (other.hashCode != hashCode) return false;
-            if (other.indices.Count != indices.Count) return false;
             
             for (int i = 0, length = indices.Count; i < length; ++i)
                 if (other.indices[i] != indices[i]) return false;
