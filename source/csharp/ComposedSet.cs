@@ -86,11 +86,16 @@ namespace ComposedSet.CSharp
         }
         public static ComposedSet<T, TDB> operator +(ComposedSet<T, TDB> a, ComposedSet<T, TDB> b)
         {
-            return new ComposedSet<T, TDB>(a.indices.Concat(b.indices).ToList());
+            var newIndicies = new List<int>(a.indices);
+            newIndicies.AddRange(b.indices);
+            return new ComposedSet<T, TDB>(newIndicies);
         }
         public static ComposedSet<T, TDB> operator +(ComposedSet<T, TDB> a, T b)
         {
-            return new ComposedSet<T, TDB>(a.indices.Concat(new ComposedSet<T, TDB>(b).indices).ToList());
+            var newIndicies = new List<int>(a.indices);
+            var bComposedSet = new ComposedSet<T, TDB>(b);
+            newIndicies.AddRange(bComposedSet.indices);
+            return new ComposedSet<T, TDB>(newIndicies);
         }
         public static bool operator ==(ComposedSet<T, TDB> a, ComposedSet<T, TDB> b)
         {
