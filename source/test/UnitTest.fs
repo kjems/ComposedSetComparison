@@ -6,8 +6,9 @@ module UnitTest =
 
     type CCSet = ComposedSet.CSharp.ComposedSet<System.String, ComposedSet.CSharp.StringComposedSetDatabase>
     type FCSet = ComposedSet.FSharp.ComposedSetOO.ComposedSet<System.String, ComposedSet.FSharp.ComposedSetOO.StringComposedSetDatabase>
-    open ComposedSet.FSharp.ComposedSetOfStrings
-    open ComposedSet.FSharp.ComposedSet
+    open ComposedSetOfStrings
+    open ComposedSet
+    open ComposedSet.ComposedSet
 
     [<Test>]
     let GetHashCodeFSOO() =
